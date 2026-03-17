@@ -1,0 +1,382 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+// ─── Enums ────────────────────────────────────────────────────────────────────
+
+enum UserRole {
+  ADMIN
+  CUSTOMER
+}
+
+enum AttributeType {
+  TEXT
+  NUMBER
+  BOOLEAN
+  SELECT
+}
+
+// ─── Users ────────────────────────────────────────────────────────────────────
+
+model User {
+  id           String   @id @default(uuid())
+  email        String   @unique
+  role         UserRole @default(CUSTOMER)
+  passwordHash String?  @map("password_hash")
+  createdAt    DateTime @default(now())
+
+  adminProfile AdminUser?
+
+  @@index([email])
+  @@index([role])
+  @@map("users")
+}
+
+model AdminUser {
+  id          String   @id @default(uuid())
+  userId      String   @unique
+  permissions Json
+  createdAt   DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("admin_users")
+}
+
+// ─── Brand ────────────────────────────────────────────────────────────────────
+
+model Brand {
+  id        String   @id @default(uuid())
+  name      String
+  slug      String   @unique
+  logoUrl   String?
+  createdAt DateTime @default(now())
+
+  products Product[]
+
+  @@index([slug])
+  @@index([name])
+  @@map("brands")
+}
+
+// ─── Category ─────────────────────────────────────────────────────────────────
+
+model Category {
+  id          String  @id @default(uuid())
+  name        String
+  slug        String  @unique
+  description String?
+
+  parentId String?
+  parent   Category?  @relation("CategoryHierarchy", fields: [parentId], references: [id])
+  children Category[] @relation("CategoryHierarchy")
+
+  products Product[]
+
+  @@index([slug])
+  @@index([parentId])
+  @@map("categories")
+}
+
+// ─── Product ──────────────────────────────────────────────────────────────────
+
+model Product {
+  id               String  @id @default(uuid())
+  name             String
+  slug             String  @unique
+  shortDescription String?
+  description      String?
+
+  price    Float?
+  currency String @default("USD")
+
+  sku         String?
+  modelNumber String?
+
+  stockQuantity Int @default(0)
+
+  isActive   Boolean @default(true)
+  isFeatured Boolean @default(false)
+
+  brandId    String?
+  categoryId String?
+
+  brand    Brand?    @relation(fields: [brandId], references: [id])
+  category Category? @relation(fields: [categoryId], references: [id])
+
+  images     ProductImage[]
+  attributes ProductAttribute[]
+  variants   ProductVariant[]
+  documents  ProductDocument[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Performance indexes for catalog queries, filtering, and sorting
+  @@index([slug])
+  @@index([isActive])
+  @@index([isFeatured])
+  @@index([brandId])
+  @@index([categoryId])
+  @@index([price])
+  @@index([isActive, isFeatured])
+  @@index([isActive, categoryId])
+  @@index([isActive, brandId])
+  @@index([isActive, price])
+  @@index([isActive, createdAt])
+  @@map("products")
+}
+
+// ─── Product Images ───────────────────────────────────────────────────────────
+// imageUrl           = Cloudinary secure_url  — used for display everywhere
+// cloudinaryPublicId = Cloudinary public_id   — used for deletion & transforms
+
+model ProductImage {
+  id                 String  @id @default(uuid())
+  imageUrl           String
+  cloudinaryPublicId String?
+  altText            String?
+  position           Int     @default(0)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([productId, position])
+  @@map("product_images")
+}
+
+// ─── Attributes ───────────────────────────────────────────────────────────────
+
+model Attribute {
+  id   String        @id @default(uuid())
+  name String
+  slug String        @unique
+  unit String?
+  type AttributeType
+
+  values            AttributeValue[]
+  productAttributes ProductAttribute[]
+
+  @@index([slug])
+  @@index([type])
+  @@map("attributes")
+}
+
+model AttributeValue {
+  id          String @id @default(uuid())
+  attributeId String
+  value       String
+
+  attribute Attribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+
+  @@index([attributeId])
+  @@map("attribute_values")
+}
+
+model ProductAttribute {
+  id          String @id @default(uuid())
+  productId   String
+  attributeId String
+  value       String
+
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  attribute Attribute @relation(fields: [attributeId], references: [id])
+
+  @@unique([productId, attributeId])
+  @@index([productId])
+  @@index([attributeId])
+  @@index([attributeId, value])
+  @@map("product_attributes")
+}
+
+// ─── Product Variants ─────────────────────────────────────────────────────────
+
+model ProductVariant {
+  id    String  @id @default(uuid())
+  name  String
+  sku   String?
+  price Float?
+  stock Int     @default(0)
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([sku])
+  @@map("product_variants")
+}
+
+// ─── Product Documents ────────────────────────────────────────────────────────
+
+model ProductDocument {
+  id           String  @id @default(uuid())
+  title        String
+  documentUrl  String
+  documentType String?
+
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId])
+  @@index([documentType])
+  @@map("product_documents")
+}
+
+// ─── SEO Pages ────────────────────────────────────────────────────────────────
+
+model SeoPage {
+  id              String   @id @default(uuid())
+  slug            String   @unique
+  title           String
+  metaDescription String?
+  content         String?
+  createdAt       DateTime @default(now())
+
+  @@index([slug])
+  @@map("seo_pages")
+}
+
+
+// =============================================================================
+// ROW LEVEL SECURITY (RLS)
+// Run all of the following in the Supabase SQL Editor after migration.
+// Skip for local pgAdmin dev — RLS is a Supabase/production concern only.
+// =============================================================================
+//
+// -- 1. Enable RLS on all tables
+// ALTER TABLE users                ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE admin_users          ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE brands               ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE categories           ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE products             ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE product_images       ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE attributes           ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE attribute_values     ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE product_attributes   ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE product_variants     ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE product_documents    ENABLE ROW LEVEL SECURITY;
+// ALTER TABLE seo_pages            ENABLE ROW LEVEL SECURITY;
+//
+//
+// -- 2. PUBLIC READ — active products and related data are publicly visible
+//
+// CREATE POLICY "public_read_products"
+// ON products FOR SELECT
+// USING (is_active = true);
+//
+// CREATE POLICY "public_read_product_images"
+// ON product_images FOR SELECT
+// USING (EXISTS (
+//   SELECT 1 FROM products
+//   WHERE products.id = product_images.product_id
+//   AND products.is_active = true
+// ));
+//
+// CREATE POLICY "public_read_product_attributes"
+// ON product_attributes FOR SELECT
+// USING (EXISTS (
+//   SELECT 1 FROM products
+//   WHERE products.id = product_attributes.product_id
+//   AND products.is_active = true
+// ));
+//
+// CREATE POLICY "public_read_product_variants"
+// ON product_variants FOR SELECT
+// USING (EXISTS (
+//   SELECT 1 FROM products
+//   WHERE products.id = product_variants.product_id
+//   AND products.is_active = true
+// ));
+//
+// CREATE POLICY "public_read_product_documents"
+// ON product_documents FOR SELECT
+// USING (EXISTS (
+//   SELECT 1 FROM products
+//   WHERE products.id = product_documents.product_id
+//   AND products.is_active = true
+// ));
+//
+// CREATE POLICY "public_read_brands"
+// ON brands FOR SELECT USING (true);
+//
+// CREATE POLICY "public_read_categories"
+// ON categories FOR SELECT USING (true);
+//
+// CREATE POLICY "public_read_attributes"
+// ON attributes FOR SELECT USING (true);
+//
+// CREATE POLICY "public_read_attribute_values"
+// ON attribute_values FOR SELECT USING (true);
+//
+// CREATE POLICY "public_read_seo_pages"
+// ON seo_pages FOR SELECT USING (true);
+//
+//
+// -- 3. ADMIN FULL ACCESS
+// -- Reusable helper function so policies stay clean and the role check is cached
+//
+// CREATE OR REPLACE FUNCTION is_admin()
+// RETURNS boolean AS $$
+//   SELECT EXISTS (
+//     SELECT 1 FROM users
+//     WHERE users.id = auth.uid()
+//     AND users.role = 'ADMIN'
+//   );
+// $$ LANGUAGE sql SECURITY DEFINER;
+//
+// CREATE POLICY "admin_all_users"              ON users              FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_admin_users"        ON admin_users        FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_brands"             ON brands             FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_categories"         ON categories         FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_products"           ON products           FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_product_images"     ON product_images     FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_attributes"         ON attributes         FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_attribute_values"   ON attribute_values   FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_product_attributes" ON product_attributes FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_product_variants"   ON product_variants   FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_product_documents"  ON product_documents  FOR ALL USING (is_admin());
+// CREATE POLICY "admin_all_seo_pages"          ON seo_pages          FOR ALL USING (is_admin());
+//
+//
+// -- 4. USER SELF ACCESS — customers can only read and update their own record
+//
+// CREATE POLICY "user_read_own"
+// ON users FOR SELECT
+// USING (id = auth.uid());
+//
+// CREATE POLICY "user_update_own"
+// ON users FOR UPDATE
+// USING (id = auth.uid());
+//
+//
+// -- 5. PARTIAL INDEXES FOR PERFORMANCE
+// -- Significantly speeds up all active-product catalog and filter queries
+//
+// CREATE INDEX CONCURRENTLY idx_products_active_featured
+// ON products (is_featured DESC, created_at DESC)
+// WHERE is_active = true;
+//
+// CREATE INDEX CONCURRENTLY idx_products_active_category_price
+// ON products (category_id, price)
+// WHERE is_active = true;
+//
+// CREATE INDEX CONCURRENTLY idx_products_active_brand_price
+// ON products (brand_id, price)
+// WHERE is_active = true;
+//
+// CREATE INDEX CONCURRENTLY idx_products_active_slug
+// ON products (slug)
+// WHERE is_active = true;
+//
+// =============================================================================
