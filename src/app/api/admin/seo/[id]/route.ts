@@ -13,7 +13,7 @@ const updateSchema = z.object({
   content:         z.string().optional().nullable(),
 });
 
-interface Context { params: { id: string }; }
+interface Context { params: Promise<{ id: string }>; }
 
 export async function PATCH(req: NextRequest, { params }: Context) {
   const auth = await requireAdmin(req);
@@ -22,12 +22,14 @@ export async function PATCH(req: NextRequest, { params }: Context) {
   const parsed = updateSchema.safeParse(await req.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 422 });
 
+  const { id } = await params;
+
   if (parsed.data.slug) {
-    const conflict = await prisma.seoPage.findFirst({ where: { slug: parsed.data.slug, NOT: { id: params.id } } });
+    const conflict = await prisma.seoPage.findFirst({ where: { slug: parsed.data.slug, NOT: { id } } });
     if (conflict) return NextResponse.json({ error: "Slug already in use" }, { status: 409 });
   }
 
-  const page = await prisma.seoPage.update({ where: { id: params.id }, data: parsed.data });
+  const page = await prisma.seoPage.update({ where: { id }, data: parsed.data });
   return NextResponse.json(page);
 }
 
@@ -35,6 +37,7 @@ export async function DELETE(req: NextRequest, { params }: Context) {
   const auth = await requireAdmin(req);
   if (!auth.ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  await prisma.seoPage.delete({ where: { id: params.id } });
+  const { id } = await params;
+  await prisma.seoPage.delete({ where: { id } });
   return NextResponse.json({ deleted: true });
 }
