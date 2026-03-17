@@ -15,7 +15,7 @@ const updateSchema = z.object({
   values: z.array(z.object({ value: z.string().min(1) })).optional(),
 });
 
-interface Context { params: { id: string }; }
+interface Context { params: Promise<{ id: string }>; }
 
 export async function PATCH(req: NextRequest, { params }: Context) {
   const auth = await requireAdmin(req);
@@ -24,19 +24,20 @@ export async function PATCH(req: NextRequest, { params }: Context) {
   const parsed = updateSchema.safeParse(await req.json().catch(() => ({})));
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 422 });
 
+  const { id } = await params;
   const { values, ...data } = parsed.data;
 
   const attribute = await prisma.$transaction(async (tx) => {
     if (values !== undefined) {
-      await tx.attributeValue.deleteMany({ where: { attributeId: params.id } });
+      await tx.attributeValue.deleteMany({ where: { attributeId: id } });
       if (values.length > 0) {
         await tx.attributeValue.createMany({
-          data: values.map((v) => ({ attributeId: params.id, value: v.value })),
+          data: values.map((v) => ({ attributeId: id, value: v.value })),
         });
       }
     }
     return tx.attribute.update({
-      where: { id: params.id },
+      where: { id },
       data: { ...data, unit: data.unit ?? undefined },
       include: { values: true },
     });
@@ -49,7 +50,7 @@ export async function DELETE(req: NextRequest, { params }: Context) {
   const auth = await requireAdmin(req);
   if (!auth.ok) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  // Cascade: product_attributes removed by Prisma relation onDelete, values removed by onDelete Cascade
-  await prisma.attribute.delete({ where: { id: params.id } });
+  const { id } = await params;
+  await prisma.attribute.delete({ where: { id } });
   return NextResponse.json({ deleted: true });
 }
