@@ -1,22 +1,12 @@
 "use client";
 
 // components/layout/Footer.tsx
-//
-// CHANGES vs previous version:
-//   • CTA banner: stacks vertically on mobile, side-by-side on tablet+
-//   • CTA h2: sentence case at smaller sizes (was all-caps via h2 global)
-//     — uses inline fontSize override to stay below the h2 display-heading threshold
-//   • CTA body copy: color raised from rgba(13,13,13,0.65) → rgba(13,13,13,0.75)
-//   • CTA button: full-width on mobile for easier tap
-//   • eyebrow in FooterLinkGroup: changed to eyebrow-light (dark steel bg)
-//   • footer-link: font-size raised from --text-sm (14px) → --text-base (16px) on mobile
-//   • footer-social-icon: size raised from 38px → 44px (tap target compliance)
-//   • footer-link :focus-visible added
-//   • footer-social-icon :focus-visible added
-//   • Bottom bar: stacks on mobile, copyright above legal links
-//   • Legal nav links: font-size raised from --text-xs (12px) → --text-sm (14px)
-//   • Brand description maxWidth loosened on mobile (was 300px, clips on narrow screens)
-//   • Contact info items: gap increased for touch-friendliness
+// Mobile-first centering strategy:
+//   • CTA banner: centered stack on mobile, space-between row at sm+
+//   • Brand column: centered on mobile (logo, desc, socials, contact), left at lg+
+//   • Link groups: centered on mobile, left at lg+
+//   • Bottom bar: centered stack on mobile, space-between row at sm+
+//   • All existing responsive breakpoints and a11y improvements preserved
 
 import Link from "next/link";
 
@@ -82,20 +72,16 @@ function FooterLinkGroup({
   links: { href: string; label: string }[];
 }) {
   return (
-    <div>
-      {/* eyebrow-light — section is on steel (dark) bg */}
-      <p className="eyebrow-light" style={{ marginBottom: "var(--space-5)" }}>
+    <div className="footer-link-group">
+      <p className="eyebrow-light footer-link-heading">
         {heading}
       </p>
       <ul
         role="list"
         style={{
-          listStyle:     "none",
-          margin:        0,
-          padding:       0,
-          display:       "flex",
-          flexDirection: "column",
-          gap:           "var(--space-3)",
+          listStyle: "none", margin: 0, padding: 0,
+          display: "flex", flexDirection: "column",
+          gap: "var(--space-3)",
         }}
       >
         {links.map(({ href, label }) => (
@@ -124,48 +110,33 @@ export default function Footer() {
 
       {/* ══════════════════════════════════════════════════════════════════
           CTA BANNER
-          Mobile:  stacked — headline → body → full-width button
+          Mobile:  centered stack — headline → body → full-width button
           Tablet+: side-by-side — text left, button right
       ══════════════════════════════════════════════════════════════════ */}
-      <div
-        style={{
-          background:   "var(--color-amber)",
-          paddingBlock: "clamp(var(--space-8), 4vw, var(--space-16))",
-        }}
-      >
+      <div style={{
+        background:   "var(--color-amber)",
+        paddingBlock: "clamp(var(--space-8), 4vw, var(--space-16))",
+      }}>
         <div className="container footer-cta-inner">
           <div className="footer-cta-text">
-            {/* TYPOGRAPHY: This is a sub-section CTA headline, not a page-level
-                h2. At clamp sizes it can dip to ~32px where uppercase is fine,
-                but we let the global h2 style handle it — it stays uppercase
-                as a display heading, which is correct in the amber banner context. */}
-            <h2
-              style={{
-                color:    "var(--color-ink)",
-                fontSize: "clamp(var(--text-2xl), 3vw, var(--text-4xl))",
-                margin:   0,
-              }}
-            >
+            <h2 style={{
+              color:    "var(--color-ink)",
+              fontSize: "clamp(var(--text-2xl), 3vw, var(--text-4xl))",
+              margin:   0,
+            }}>
               Ready to Equip Your Kitchen?
             </h2>
-            <p
-              style={{
-                // RAISED from 0.65 → 0.75 — was too faint on amber
-                color:     "rgba(13,13,13,0.75)",
-                marginTop: "var(--space-2)",
-                maxWidth:  "none",
-                fontSize:  "var(--text-base)",
-              }}
-            >
+            <p style={{
+              color:     "rgba(13,13,13,0.75)",
+              marginTop: "var(--space-2)",
+              maxWidth:  "none",
+              fontSize:  "var(--text-base)",
+            }}>
               Talk to our equipment specialists — no obligation, just expert advice.
             </p>
           </div>
 
-          {/* Button: full-width on mobile, auto-width on tablet+ */}
-          <Link
-            href="/contact"
-            className="btn btn-secondary btn-lg footer-cta-btn"
-          >
+          <Link href="/contact" className="btn btn-secondary btn-lg footer-cta-btn">
             Request a Quote →
           </Link>
         </div>
@@ -183,48 +154,38 @@ export default function Footer() {
           {/* ── Brand column ─────────────────────────────────────────── */}
           <div className="footer-brand-col">
 
-            {/* Logo wordmark */}
+            {/* Logo */}
             <Link
               href="/"
               aria-label="Jocax Solutions — home"
               style={{
-                fontFamily:    "var(--font-display)",
-                fontWeight:    900,
-                fontSize:      "var(--text-xl)",
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                color:         "var(--color-white)",
-                display:       "inline-block",
-                marginBottom:  "var(--space-4)",
-                textDecoration:"none",
+                fontFamily: "var(--font-display)", fontWeight: 900,
+                fontSize: "var(--text-xl)", letterSpacing: "0.06em",
+                textTransform: "uppercase", color: "var(--color-white)",
+                display: "inline-block", marginBottom: "var(--space-4)",
+                textDecoration: "none",
               }}
             >
               JOCAX<span style={{ color: "var(--color-amber)" }}>.</span>
             </Link>
 
-            {/* Brand description */}
-            <p
-              style={{
-                color:      "var(--color-text-muted)",
-                fontSize:   "var(--text-sm)",
-                // maxWidth loosened — 300px clips at narrow viewport widths
-                maxWidth:   "100%",
-                lineHeight: "var(--leading-relaxed)",
-              }}
-            >
+            {/* Description */}
+            <p style={{
+              color: "var(--color-text-muted)", fontSize: "var(--text-sm)",
+              maxWidth: "100%", lineHeight: "var(--leading-relaxed)",
+            }}>
               Specializing in scalable commercial kitchen equipment supply,
               SaaS platforms, and enterprise digital infrastructure for the
               food service industry.
             </p>
 
             {/* Social icons */}
-            <div
-              style={{
-                display:   "flex",
-                gap:       "var(--space-2)",
-                marginTop: "var(--space-6)",
-              }}
-            >
+            <div style={{
+              display: "flex", gap: "var(--space-2)",
+              marginTop: "var(--space-6)",
+              /* Mobile: center the icon row */
+              justifyContent: "center",
+            }}>
               {SOCIAL_LINKS.map(({ href, label, icon }) => (
                 <a
                   key={label}
@@ -240,15 +201,13 @@ export default function Footer() {
             </div>
 
             {/* Contact info */}
-            <div
-              style={{
-                marginTop:     "var(--space-6)",
-                display:       "flex",
-                flexDirection: "column",
-                // RAISED gap for touch-friendliness
-                gap:           "var(--space-3)",
-              }}
-            >
+            <div style={{
+              marginTop: "var(--space-6)",
+              display: "flex", flexDirection: "column",
+              gap: "var(--space-3)",
+              /* Mobile: center contact items */
+              alignItems: "center",
+            }}>
               {[
                 { icon: "✉",  text: "hello@jocax.com",   href: "mailto:hello@jocax.com"  },
                 { icon: "📞", text: "+1 (800) 555-0192", href: "tel:+18005550192"         },
@@ -257,15 +216,10 @@ export default function Footer() {
                   key={text}
                   href={href}
                   style={{
-                    fontSize:       "var(--text-sm)",
-                    color:          "var(--color-text-muted)",
-                    display:        "flex",
-                    gap:            "var(--space-2)",
-                    alignItems:     "center",
-                    textDecoration: "none",
-                    // Minimum 44px tall for tap target
-                    minHeight:      "44px",
-                    transition:     "color var(--transition-fast)",
+                    fontSize: "var(--text-sm)", color: "var(--color-text-muted)",
+                    display: "flex", gap: "var(--space-2)", alignItems: "center",
+                    textDecoration: "none", minHeight: "44px",
+                    transition: "color var(--transition-fast)",
                   }}
                   className="footer-contact-link"
                 >
@@ -284,44 +238,29 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <hr
-          className="divider"
-          style={{ margin: "clamp(var(--space-8), 4vw, var(--space-12)) 0 0" }}
-        />
+        <hr className="divider"
+          style={{ margin: "clamp(var(--space-8), 4vw, var(--space-12)) 0 0" }}/>
 
-        {/* ── Bottom bar ───────────────────────────────────────────────
-            Mobile:  stacked — copyright above legal links
-            Tablet+: side-by-side
-        ─── */}
+        {/* ── Bottom bar ── */}
         <div className="footer-bottom">
           <small style={{ color: "var(--color-text-muted)" }}>
             © {new Date().getFullYear()} Jocax Solutions Limited. All rights reserved.
           </small>
 
           <nav aria-label="Legal links">
-            <ul
-              role="list"
-              style={{
-                listStyle: "none",
-                margin:    0,
-                padding:   0,
-                display:   "flex",
-                gap:       "var(--space-6)",
-                flexWrap:  "wrap",
-              }}
-            >
+            <ul role="list" style={{
+              listStyle: "none", margin: 0, padding: 0,
+              display: "flex", gap: "var(--space-6)", flexWrap: "wrap",
+              /* Mobile: center legal links */
+              justifyContent: "center",
+            }}>
               {[
                 { href: "/privacy",     label: "Privacy" },
                 { href: "/terms",       label: "Terms"   },
                 { href: "/sitemap.xml", label: "Sitemap" },
               ].map(({ href, label }) => (
                 <li key={href}>
-                  {/* RAISED from --text-xs (12px) → --text-sm (14px) */}
-                  <Link
-                    href={href}
-                    className="footer-link"
-                    style={{ fontSize: "var(--text-sm)" }}
-                  >
+                  <Link href={href} className="footer-link" style={{ fontSize: "var(--text-sm)" }}>
                     {label}
                   </Link>
                 </li>
@@ -339,57 +278,65 @@ export default function Footer() {
 
         /* ── Footer link ── */
         .footer-link {
-          color:           var(--color-text-muted);
-          /* MOBILE: 16px for comfortable reading in stacked column layout */
-          font-size:       var(--text-base);
+          color: var(--color-text-muted);
+          font-size: var(--text-base);
           text-decoration: none;
-          /* min-height ensures 44px tap target when in flex column */
-          min-height:      44px;
-          display:         flex;
-          align-items:     center;
-          transition:      color var(--transition-fast);
-          line-height:     var(--leading-normal);
+          min-height: 44px;
+          display: flex; align-items: center;
+          /* Mobile: centered in link group */
+          justify-content: center;
+          transition: color var(--transition-fast);
+          line-height: var(--leading-normal);
         }
         .footer-link:hover { color: var(--color-white); }
         .footer-link:focus-visible {
-          outline:        3px solid var(--color-amber);
+          outline: 3px solid var(--color-amber);
           outline-offset: 3px;
-          border-radius:  var(--radius-sm);
+          border-radius: var(--radius-sm);
         }
-        /* Desktop: tighten back to 14px — compact column fits the grid */
+        /* Desktop: left-aligned, compact */
         @media (min-width: 1024px) {
           .footer-link {
-            font-size:  var(--text-sm);
+            font-size: var(--text-sm);
             min-height: auto;
-            display:    inline;
+            display: inline;
+            justify-content: flex-start;
           }
         }
 
-        /* ── Contact link (email + phone) ── */
+        /* ── Link group — centered on mobile, left at lg+ ── */
+        .footer-link-group {
+          text-align: center;
+          display: flex; flex-direction: column; align-items: center;
+        }
+        .footer-link-heading {
+          margin-bottom: var(--space-5);
+        }
+        @media (min-width: 1024px) {
+          .footer-link-group { text-align: left; align-items: flex-start; }
+        }
+
+        /* ── Contact link ── */
         .footer-contact-link:hover { color: var(--color-white); }
         .footer-contact-link:focus-visible {
-          outline:        3px solid var(--color-amber);
+          outline: 3px solid var(--color-amber);
           outline-offset: 3px;
-          border-radius:  var(--radius-sm);
+          border-radius: var(--radius-sm);
         }
 
         /* ── Social icon ── */
         .footer-social-icon {
-          display:         flex;
-          align-items:     center;
-          justify-content: center;
-          /* RAISED from 38px → 44px — tap target compliance */
-          width:           44px;
-          height:          44px;
-          background:      rgba(255,255,255,0.05);
-          border:          1px solid var(--color-border-dark);
-          border-radius:   var(--radius-md);
-          color:           var(--color-text-muted);
+          display: flex; align-items: center; justify-content: center;
+          width: 44px; height: 44px;
+          background: rgba(255,255,255,0.05);
+          border: 1px solid var(--color-border-dark);
+          border-radius: var(--radius-md);
+          color: var(--color-text-muted);
           text-decoration: none;
           transition:
-            background     var(--transition-fast),
-            color          var(--transition-fast),
-            border-color   var(--transition-fast);
+            background   var(--transition-fast),
+            color        var(--transition-fast),
+            border-color var(--transition-fast);
         }
         .footer-social-icon:hover {
           background:   var(--color-amber-muted);
@@ -397,69 +344,106 @@ export default function Footer() {
           border-color: rgba(232,160,32,0.3);
         }
         .footer-social-icon:focus-visible {
-          outline:        3px solid var(--color-amber);
+          outline: 3px solid var(--color-amber);
           outline-offset: 3px;
         }
 
         /* ── Footer grid ── */
         .footer-grid {
-          display:               grid;
-          grid-template-columns: 1fr;
-          gap:                   var(--space-10);
+          display: grid; grid-template-columns: 1fr;
+          gap: var(--space-10);
+          /* Mobile: all columns centered */
+          justify-items: center;
+          text-align: center;
         }
-        /* Tablet 640px: 2-col — brand spans full width, links in 2-col pairs */
         @media (min-width: 640px) {
-          .footer-grid      { grid-template-columns: 1fr 1fr; gap: var(--space-10) var(--space-8); }
+          .footer-grid {
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-10) var(--space-8);
+            justify-items: start;
+            text-align: left;
+          }
           .footer-brand-col { grid-column: span 2; }
         }
-        /* Desktop 1024px: full 4-col layout */
         @media (min-width: 1024px) {
-          .footer-grid      { grid-template-columns: 2fr 1fr 1fr 1fr; gap: var(--space-12); }
+          .footer-grid {
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: var(--space-12);
+            justify-items: start;
+          }
           .footer-brand-col { grid-column: span 1; }
+        }
+
+        /* ── Brand column — centered on mobile, left at lg+ ── */
+        .footer-brand-col {
+          display: flex; flex-direction: column;
+          align-items: center;    /* mobile: center logo, desc, socials, contact */
+          text-align: center;
+          width: 100%;
+        }
+        @media (min-width: 640px) {
+          .footer-brand-col {
+            align-items: flex-start;
+            text-align: left;
+          }
+          /* Social icons row: left-aligned at sm+ */
+          .footer-brand-col > div[style*="justifyContent"] {
+            justify-content: flex-start !important;
+          }
+          /* Contact items: left-aligned at sm+ */
+          .footer-brand-col > div:last-child {
+            align-items: flex-start;
+          }
         }
 
         /* ── CTA banner inner ── */
         .footer-cta-inner {
-          display:        flex;
-          flex-direction: column;      /* Mobile: stack */
-          gap:            var(--space-6);
-          align-items:    flex-start;
+          display: flex;
+          /* Mobile: centered stack */
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: var(--space-6);
         }
         @media (min-width: 640px) {
           .footer-cta-inner {
-            flex-direction: row;        /* Tablet+: side by side */
-            align-items:    center;
-            justify-content:space-between;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
           }
         }
-
-        /* CTA text block */
         .footer-cta-text { flex: 1; }
 
-        /* CTA button: full-width on mobile, auto on tablet+ */
+        /* CTA button: full-width on mobile, auto on sm+ */
         .footer-cta-btn {
-          width:      100%;
-          flex-shrink:0;
-          text-align: center;
+          width: 100%; flex-shrink: 0; text-align: center;
+          /* Cap so it doesn't become a runway on wide mobile */
+          max-width: 26rem;
         }
         @media (min-width: 640px) {
-          .footer-cta-btn { width: auto; }
+          .footer-cta-btn { width: auto; max-width: none; }
         }
 
         /* ── Bottom bar ── */
         .footer-bottom {
-          display:        flex;
-          flex-direction: column;      /* Mobile: stack copyright above links */
-          align-items:    flex-start;
-          gap:            var(--space-4);
-          padding:        var(--space-5) 0 clamp(var(--space-6), 3vw, var(--space-8));
+          display: flex;
+          /* Mobile: centered stack */
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          gap: var(--space-4);
+          padding: var(--space-5) 0 clamp(var(--space-6), 3vw, var(--space-8));
         }
         @media (min-width: 640px) {
           .footer-bottom {
-            flex-direction: row;        /* Tablet+: side by side */
-            align-items:    center;
-            justify-content:space-between;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            text-align: left;
           }
+          /* Legal links: left-aligned in row layout */
+          .footer-bottom nav ul { justify-content: flex-start; }
         }
       `}</style>
     </footer>

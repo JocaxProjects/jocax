@@ -24,7 +24,7 @@ import type { ProductListItem } from "@/types";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const WA_NUMBER = "254700123456"; // keep in sync with ProductCard/index.tsx
+const WA_NUMBER = "254725692649"; // keep in sync with ProductCard/index.tsx
 
 function waHref(productName: string) {
   const msg = encodeURIComponent(

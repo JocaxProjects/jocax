@@ -40,7 +40,18 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${oswald.variable} antialiased`}>
+      {/*
+        suppressHydrationWarning on <body> silences the mismatch caused by
+        browser extensions (e.g. Grammarly, LastPass, ColorZilla) that inject
+        attributes like `cz-shortcut-listen` into the DOM after SSR but before
+        React hydrates. This prop only suppresses warnings one level deep —
+        it does NOT affect any children, so real hydration bugs elsewhere are
+        still caught and reported normally.
+      */}
+      <body
+        className={`${outfit.variable} ${oswald.variable} antialiased`}
+        suppressHydrationWarning
+      >
         {!isAdmin && <Header />}
         {children}
         {!isAdmin && <Footer />}

@@ -64,25 +64,23 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
         paddingTop:          "var(--nav-height)",
       }}
     >
-      {/* ── Ambient radial glow ──────────────────────────────────────────── */}
+      {/* Ambient radial glow */}
       <div
         aria-hidden="true"
         style={{
-          position:      "absolute",
-          inset:         0,
+          position:     "absolute", inset: 0,
           background:
             "radial-gradient(ellipse 60% 80% at 70% 50%,rgba(232,160,32,.08) 0%,transparent 70%)," +
             "radial-gradient(ellipse 40% 60% at 20% 80%,rgba(232,160,32,.05) 0%,transparent 60%)",
-          pointerEvents: "none",
+          pointerEvents:"none",
         }}
       />
 
-      {/* ── Subtle grid texture ──────────────────────────────────────────── */}
+      {/* Subtle grid texture */}
       <div
         aria-hidden="true"
         style={{
-          position:        "absolute",
-          inset:           0,
+          position:        "absolute", inset: 0,
           backgroundImage:
             "linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px)," +
             "linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px)",
@@ -93,6 +91,8 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
 
       {/* ══════════════════════════════════════════════════════════════════
           LEFT / TOP — Copy block
+          Mobile:  centered — h1, subtitle, buttons all centered
+          Tablet+: left-aligned
       ══════════════════════════════════════════════════════════════════ */}
       <div
         style={{
@@ -104,6 +104,9 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
           display:        "flex",
           flexDirection:  "column",
           justifyContent: "center",
+          /* Mobile: center all children */
+          alignItems:     isMobile ? "center" : "flex-start",
+          textAlign:      isMobile ? "center" : "left",
           position:       "relative",
           zIndex:         "var(--z-raised)",
         }}
@@ -130,9 +133,11 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
             fontSize:     isMobile ? "var(--text-base)" : "clamp(var(--text-base),1.5vw,var(--text-lg))",
             color:        "rgba(255,255,255,0.65)",
             lineHeight:   "var(--leading-relaxed)",
-            maxWidth:     isDesktop ? "480px" : "640px",
+            /* Mobile: centered block with auto margins */
+            maxWidth:     isDesktop ? "480px" : "min(520px, 100%)",
             marginTop:    "var(--space-4)",
             marginBottom: isMobile ? "var(--space-8)" : "var(--space-10)",
+            marginInline: isMobile ? "auto" : undefined,
             fontWeight:   300,
           }}
         >
@@ -141,17 +146,36 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
           built for restaurants, hotels, and food service operations.
         </p>
 
-        {/* CTA buttons */}
+        {/* CTA buttons
+            Mobile:  full-width stacked, capped at 26rem, centered
+            Tablet+: row, auto width
+        */}
         <div
           style={{
             display:       "flex",
             flexDirection: isMobile ? "column" : "row",
             gap:           "var(--space-3)",
             flexWrap:      "wrap",
+            /* Mobile: cap and center the button group */
+            width:         isMobile ? "100%" : undefined,
+            maxWidth:      isMobile ? "26rem" : undefined,
+            alignSelf:     isMobile ? "center" : undefined,
           }}
         >
-          <Link href="/products"  className="btn btn-primary btn-lg"      style={{ textAlign: "center" }}>Browse Catalog →</Link>
-          <Link href="/search"    className="btn btn-outline-light btn-lg" style={{ textAlign: "center" }}>Search Equipment</Link>
+          <Link
+            href="/products"
+            className="btn btn-primary btn-lg"
+            style={{ textAlign: "center" }}
+          >
+            Browse Catalog →
+          </Link>
+          <Link
+            href="/search"
+            className="btn btn-outline-light btn-lg"
+            style={{ textAlign: "center" }}
+          >
+            Search Equipment
+          </Link>
         </div>
       </div>
 
@@ -174,7 +198,7 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
       >
         <div style={{ width: "100%" }}>
 
-          {/* ── Hero main card ────────────────────────────────────────── */}
+          {/* Hero main card */}
           <Link
             href={`/products/${hero.slug}`}
             aria-label={`View ${hero.name}${hero.price !== null ? ` — starting at ${formatPrice(hero.price, hero.currency)}` : ""}`}
@@ -215,23 +239,15 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
                   fill
                   priority
                   sizes="(max-width: 639px) 120px, (max-width: 1023px) 100vw, 50vw"
-                  style={{
-                    objectFit: "cover",
-                    filter:    "brightness(0.85)",
-                  }}
+                  style={{ objectFit: "cover", filter: "brightness(0.85)" }}
                 />
               ) : (
-                <div
-                  style={{
-                    width:           "100%",
-                    height:          "100%",
-                    background:      "var(--color-surface-alt)",
-                    display:         "flex",
-                    alignItems:      "center",
-                    justifyContent:  "center",
-                    fontSize:        "3rem",
-                  }}
-                >
+                <div style={{
+                  width: "100%", height: "100%",
+                  background: "var(--color-surface-alt)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                  fontSize: "3rem",
+                }}>
                   📦
                 </div>
               )}
@@ -254,38 +270,26 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
                 {hero.category?.name}
               </p>
 
-              <p
-                style={{
-                  fontFamily: "var(--font-display)",
-                  fontWeight: 700,
-                  fontSize:   isMobile
-                    ? "var(--text-base)"
-                    : isTablet
-                    ? "var(--text-lg)"
-                    : "var(--text-xl)",
-                  color:      "var(--color-white)",
-                  lineHeight: "var(--leading-snug)",
-                  maxWidth:   "none",
-                }}
-              >
+              <p style={{
+                fontFamily: "var(--font-display)", fontWeight: 700,
+                fontSize:   isMobile ? "var(--text-base)" : isTablet ? "var(--text-lg)" : "var(--text-xl)",
+                color:      "var(--color-white)",
+                lineHeight: "var(--leading-snug)",
+                maxWidth:   "none",
+              }}>
                 {hero.name}
               </p>
 
-              <p
-                style={{
-                  fontFamily:    "var(--font-display)",
-                  fontWeight:    800,
-                  fontSize:      isMobile ? "var(--text-lg)" : "var(--text-2xl)",
-                  color:         "var(--color-white)",
-                  marginTop:     "auto",
-                  letterSpacing: "var(--tracking-tight)",
-                  maxWidth:      "none",
-                  display:       "flex",
-                  alignItems:    "baseline",
-                  gap:           "var(--space-2)",
-                  flexWrap:      "wrap",
-                }}
-              >
+              <p style={{
+                fontFamily:    "var(--font-display)", fontWeight: 800,
+                fontSize:      isMobile ? "var(--text-lg)" : "var(--text-2xl)",
+                color:         "var(--color-white)",
+                marginTop:     "auto",
+                letterSpacing: "var(--tracking-tight)",
+                maxWidth:      "none",
+                display:       "flex", alignItems: "baseline",
+                gap:           "var(--space-2)", flexWrap: "wrap",
+              }}>
                 {hero.price !== null && formatPrice(hero.price, hero.currency)}
                 <span style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "rgba(255,255,255,0.45)" }}>
                   Starting price
@@ -294,16 +298,14 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
             </div>
           </Link>
 
-          {/* ── Mini product cards (tablet + desktop only) ──────────────── */}
+          {/* Mini product cards — tablet + desktop only */}
           {!isMobile && mini.length > 0 && (
-            <div
-              style={{
-                display:             "grid",
-                gridTemplateColumns: "1fr 1fr",
-                gap:                 "var(--space-3)",
-                marginTop:           "var(--space-3)",
-              }}
-            >
+            <div style={{
+              display:             "grid",
+              gridTemplateColumns: "1fr 1fr",
+              gap:                 "var(--space-3)",
+              marginTop:           "var(--space-3)",
+            }}>
               {mini.map((product) => (
                 <ProductCard
                   key={product.id}
@@ -315,7 +317,7 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
             </div>
           )}
 
-          {/* ── Mobile: "view all" nudge ─────────────────────────────────── */}
+          {/* Mobile: "view all" nudge */}
           {isMobile && (
             <Link
               href="/products"
@@ -325,8 +327,7 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
                 justifyContent: "center",
                 gap:            "var(--space-2)",
                 marginTop:      "var(--space-4)",
-                fontSize:       "var(--text-sm)",
-                fontWeight:     700,
+                fontSize:       "var(--text-sm)", fontWeight: 700,
                 fontFamily:     "var(--font-display)",
                 letterSpacing:  "var(--tracking-wide)",
                 textTransform:  "uppercase",

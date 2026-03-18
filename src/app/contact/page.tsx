@@ -93,11 +93,25 @@ export default function ContactPage() {
         .au-d1        { animation: fade-up 0.6s 0.08s ease both; }
         .au-d2        { animation: fade-up 0.6s 0.16s ease both; }
         .au-d3        { animation: fade-up 0.6s 0.24s ease both; }
+
+        /* ── Amber rule — mirrors about page exactly ──
+           Mobile: centered (transform-origin center, margin auto)
+           Desktop (≥1024px): left-aligned (transform-origin left, margin 0)
+        ── */
         .amber-rule {
           display: block; height: 3px; width: 44px;
           background: var(--color-amber); border-radius: 2px;
-          transform-origin: left;
           animation: expand-x 0.5s 0.15s ease both;
+          transform-origin: center;
+          margin-left: auto;
+          margin-right: auto;
+        }
+        @media (min-width: 1024px) {
+          .amber-rule {
+            transform-origin: left;
+            margin-left: 0;
+            margin-right: 0;
+          }
         }
 
         /* ── Section label ── */
@@ -129,39 +143,120 @@ export default function ContactPage() {
           font-size: var(--text-lg); color: rgba(255,255,255,0.5);
           line-height: var(--leading-relaxed); font-weight: 300;
           max-width: min(520px, 100%);
+          margin-left: auto;
+          margin-right: auto;
+        }
+        @media (min-width: 1024px) {
+          .contact-lead { margin-left: 0; margin-right: 0; }
         }
         .contact-body-sm {
           font-size: var(--text-xs); color: rgba(255,255,255,0.4);
           line-height: var(--leading-snug); max-width: none;
         }
 
-        /* ── Hero — capped at 100vh, 10vw padding on desktop ── */
+        /* ── Hero ──────────────────────────────────────────────────
+           Mirrors about page hero exactly:
+           • padding-top: nav-height, no fixed height — content-driven
+           • padding-block: clamp(2.5rem, 8vw, 5rem) on the body
+           • Mobile (<640px):  centered, diagonal hidden
+           • Tablet (640–1023px): still centered, diagonal visible
+           • Desktop (≥1024px): left-aligned, stat floats right
+        ── */
         .contact-hero-wrap {
           background: var(--color-steel);
           position: relative; overflow: hidden;
           padding-top: var(--nav-height);
-          max-height: 100vh;
-          box-sizing: border-box;
+        }
+
+        .contact-hero-body {
+          padding-block: clamp(2.5rem, 8vw, 5rem);
+          /* Mobile: center everything */
+          text-align: center;
           display: flex;
           flex-direction: column;
+          align-items: center;
+        }
+
+        /* Mobile: breadcrumb centered */
+        .contact-breadcrumb {
+          margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
+          align-self: stretch;
+        }
+        .contact-breadcrumb ol {
           justify-content: center;
         }
-        .contact-hero-body {
-          padding-block: clamp(3rem, 6vw, 5rem);
+
+        /* Mobile: inner row stacks vertically, items centered except stat */
+        .contact-hero-inner {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: clamp(1.5rem, 4vw, 2rem);
+          width: 100%;
+        }
+
+        /* Stat block — always right-aligned, constrained inside the amber clip */
+        .contact-hero-inner > div:last-child {
+          text-align: right;
+          flex-shrink: 0;
+          align-self: flex-end;
+          /* Cap width so it always sits inside the diagonal amber region (~35vw) */
+          max-width: min(35%, 220px);
+          /* Clip any overflow so text never bleeds past the gradient */
+          overflow: hidden;
+        }
+
+        /* Mobile: text block constrained and centered */
+        .contact-hero-inner > div:first-child {
+          width: 100%;
+          max-width: min(600px, 100%);
+        }
+
+        /* Stat value — fluid size so it never overflows the clip on any screen */
+        .contact-hero-inner > div:last-child p:first-child {
+          font-size: clamp(var(--text-xl), 5vw, var(--text-4xl)) !important;
+          white-space: nowrap;
+        }
+        .contact-hero-inner > div:last-child p:last-child {
+          white-space: nowrap;
+          font-size: clamp(0.55rem, 1.5vw, var(--text-xs)) !important;
+          /* Mobile: sentence case — easier to read at small sizes */
+          text-transform: none !important;
+          letter-spacing: 0.03em !important;
         }
         @media (min-width: 1024px) {
-          .contact-hero-body {
-            padding-block: 10vw;
+          .contact-hero-inner > div:last-child p:last-child {
+            /* Desktop: restore original uppercase tracking */
+            text-transform: uppercase !important;
+            letter-spacing: var(--tracking-widest) !important;
           }
         }
 
-        /* ── Hero inner ── */
-        .contact-hero-inner {
-          display: flex;
-          align-items: flex-end;
-          justify-content: space-between;
-          flex-wrap: wrap;
-          gap: 2rem;
+        /* Diagonal accent — always visible on all screen sizes */
+        .hero-diagonal { display: block; }
+
+        /* Desktop (≥1024px): left-aligned row — mirrors about page lg+ */
+        @media (min-width: 1024px) {
+          .contact-hero-body {
+            text-align: left;
+            align-items: flex-start;
+          }
+          .contact-breadcrumb ol {
+            justify-content: flex-start;
+          }
+          .contact-hero-inner {
+            flex-direction: row;
+            align-items: flex-end;
+            justify-content: space-between;
+          }
+          .contact-hero-inner > div:first-child {
+            max-width: min(600px, 60%);
+          }
+          /* Stat block — pushed to right, text right-aligned */
+          .contact-hero-inner > div:last-child {
+            text-align: right;
+            flex-shrink: 0;
+          }
         }
 
         /* ── Contact channel card ── */
@@ -303,11 +398,6 @@ export default function ContactPage() {
           padding-bottom: clamp(2rem, 5vw, 3.5rem);
         }
 
-        /* ── Breadcrumb ── */
-        .contact-breadcrumb {
-          margin-bottom: clamp(1.5rem, 4vw, 2.5rem);
-        }
-
         /* ── Safe area insets for notched phones ── */
         @supports (padding: max(0px)) {
           .contact-safe {
@@ -320,6 +410,12 @@ export default function ContactPage() {
         .ch-card-text p {
           max-width: 100%;
         }
+
+        /* ── Reduced motion ── */
+        @media (prefers-reduced-motion: reduce) {
+          .au, .au-d1, .au-d2, .au-d3 { animation: none; opacity: 1; transform: none; }
+          .amber-rule { animation: none; transform: scaleX(1); }
+        }
       `}</style>
 
       <div style={{ background: "var(--color-ink)", minHeight: "100vh" }}>
@@ -328,13 +424,17 @@ export default function ContactPage() {
             HERO BAND
         ════════════════════════════════════════════════════════════════ */}
         <div className="contact-hero-wrap">
-          {/* Diagonal accent */}
-          <div aria-hidden="true" style={{
-            position: "absolute", top: 0, right: "-10%",
-            width: "45%", height: "100%",
-            background: "linear-gradient(135deg, transparent 45%, rgba(232,160,32,0.18) 45%)",
-            pointerEvents: "none",
-          }} />
+          {/* Diagonal accent — desktop only via .hero-diagonal class */}
+          <div
+            className="hero-diagonal"
+            aria-hidden="true"
+            style={{
+              position: "absolute", top: 0, right: "-10%",
+              width: "45%", height: "100%",
+              background: "linear-gradient(135deg, transparent 45%, rgba(232,160,32,0.18) 45%)",
+              pointerEvents: "none",
+            }}
+          />
 
           <div className="container contact-hero-body">
             {/* Breadcrumb */}
@@ -353,7 +453,7 @@ export default function ContactPage() {
                   Let&apos;s Talk{" "}
                   <span style={{ color: "var(--color-amber)" }}>Equipment.</span>
                 </h1>
-                <span className="amber-rule" style={{ margin: "1.5rem 0" }} />
+                <span className="amber-rule" style={{ marginTop: "1.5rem", marginBottom: "1.5rem" }} />
                 <p className="contact-lead au-d2">
                   Whether you need a quote, have a technical question, or are planning
                   a full kitchen fit-out — our specialists are ready to help. We respond

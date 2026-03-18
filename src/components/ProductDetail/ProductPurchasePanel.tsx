@@ -13,7 +13,7 @@ import type { ProductVariant } from "@/types";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const WA_NUMBER = "254700123456";
+const WA_NUMBER = "254725692649"; // keep in sync with ProductCard/index.tsx
 
 function waQuoteHref(productName: string, modelNumber?: string | null) {
   const id  = modelNumber ? ` (Model: ${modelNumber})` : "";

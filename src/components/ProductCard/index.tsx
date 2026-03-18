@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import type { ProductListItem } from "@/types";
 
-const WA_NUMBER = "254700123456";
+const WA_NUMBER = "254725692649";
 
 function waHref(productName: string) {
   const msg = encodeURIComponent(`Hi, I'd like to request a quote for: ${productName}`);

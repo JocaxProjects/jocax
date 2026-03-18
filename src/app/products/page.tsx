@@ -5,14 +5,16 @@
 //  - It fetches the initial data on the server for SEO + fast first paint
 //  - ProductsClient handles all on-the-fly filtering, sorting, and search
 //    via URL state + a /api/products route (no full page reloads)
-
-// src/app/products/page.tsx
+//
+// FIXED (Next.js 15): searchParams is now a Promise — must be awaited before
+// accessing any properties. The type reflects this: Promise<{...}>.
 
 import type { Metadata } from "next";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
 import type { ProductListItem } from "@/types";
 import ProductsClient from "./ProductsClient";
+
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
@@ -28,46 +30,50 @@ export const metadata: Metadata = {
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
+// Next.js 15: searchParams is a Promise, not a plain object.
+type ResolvedSearchParams = {
+  brand?:     string;
+  category?:  string;
+  minPrice?:  string;
+  maxPrice?:  string;
+  sort?:      string;
+  page?:      string;
+  q?:         string;
+};
+
 interface PageProps {
-  searchParams: {
-    brand?:     string;
-    category?:  string;
-    minPrice?:  string;
-    maxPrice?:  string;
-    sort?:      string;
-    page?:      string;
-    q?:         string;
-  };
+  searchParams: Promise<ResolvedSearchParams>;
 }
 
 const PRODUCTS_PER_PAGE = 24;
 
 // ─── Data Fetching ────────────────────────────────────────────────────────────
 
-async function getProducts(searchParams: PageProps["searchParams"]) {
-  const page = Math.max(1, parseInt(searchParams.page ?? "1", 10));
+// Accepts the already-resolved params object — no Promise here.
+async function getProducts(params: ResolvedSearchParams) {
+  const page = Math.max(1, parseInt(params.page ?? "1", 10));
   const skip = (page - 1) * PRODUCTS_PER_PAGE;
 
- const where: Prisma.ProductWhereInput = {
+  const where: Prisma.ProductWhereInput = {
     isActive: true,
-    ...(searchParams.brand    && { brand:    { slug: searchParams.brand    } }),
-    ...(searchParams.category && { category: { slug: searchParams.category } }),
-    ...((searchParams.minPrice || searchParams.maxPrice) && {
+    ...(params.brand    && { brand:    { slug: params.brand    } }),
+    ...(params.category && { category: { slug: params.category } }),
+    ...((params.minPrice || params.maxPrice) && {
       price: {
-        ...(searchParams.minPrice && { gte: parseFloat(searchParams.minPrice) }),
-        ...(searchParams.maxPrice && { lte: parseFloat(searchParams.maxPrice) }),
+        ...(params.minPrice && { gte: parseFloat(params.minPrice) }),
+        ...(params.maxPrice && { lte: parseFloat(params.maxPrice) }),
       },
     }),
-    ...(searchParams.q && {
+    ...(params.q && {
       OR: [
-        { name:             { contains: searchParams.q, mode: "insensitive" } },
-        { shortDescription: { contains: searchParams.q, mode: "insensitive" } },
+        { name:             { contains: params.q, mode: "insensitive" } },
+        { shortDescription: { contains: params.q, mode: "insensitive" } },
       ],
     }),
   };
 
   const orderBy = (() => {
-    switch (searchParams.sort) {
+    switch (params.sort) {
       case "price_asc":  return { price:      "asc"  as const };
       case "price_desc": return { price:      "desc" as const };
       case "newest":     return { createdAt:  "desc" as const };
@@ -124,8 +130,12 @@ async function getFilterOptions() {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function ProductsPage({ searchParams }: PageProps) {
+  // ✅ Await the Promise before passing resolved params to anything.
+  // All downstream code (getProducts, ProductsClient) receives a plain object.
+  const params = await searchParams;
+
   const [{ products, total }, { brands, categories }] = await Promise.all([
-    getProducts(searchParams),
+    getProducts(params),
     getFilterOptions(),
   ]);
 
@@ -135,7 +145,7 @@ export default async function ProductsPage({ searchParams }: PageProps) {
       initialTotal={total}
       brands={brands}
       categories={categories}
-      searchParams={searchParams}
+      searchParams={params}
     />
   );
 }
