@@ -1,19 +1,4 @@
 // src/app/api/admin/products/[id]/route.ts
-//
-// GET    /api/admin/products/[id] — fetch full product for edit form
-// PATCH  /api/admin/products/[id] — partial update (fields + image replacement)
-// DELETE /api/admin/products/[id] — hard delete (cascades in DB, cleans Cloudinary)
-//
-// PATCH image replacement:
-//   When `images` is present in the PATCH body, this route:
-//     1. Reads existing images to collect their cloudinaryPublicId values
-//     2. Deletes old images from Cloudinary (best-effort, non-blocking)
-//     3. Replaces all ProductImage rows in a transaction
-//     4. Creates new rows with { imageUrl, cloudinaryPublicId, altText, position }
-//
-// DELETE:
-//   Deletes all Cloudinary files for the product's images before removing
-//   the DB record (cascade handles the ProductImage rows).
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma }       from "@/lib/prisma";
@@ -21,33 +6,49 @@ import { z }            from "zod";
 import { requireAdmin } from "@/lib/admin-auth";
 import { deleteImage }  from "@/lib/cloudinary";
 
-// ─── Schema ───────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+
+/** Coerce empty string → null */
+const nullableString = z.string().transform((v) => v === "" ? null : v).nullable().optional();
 
 const imageSchema = z.object({
-  publicId:  z.string().min(1),
+  publicId:  z.string(), // allow empty — we'll derive from URL if blank
   imageUrl:  z.string().url(),
-  altText:   z.string().optional().nullable(),
+  altText:   nullableString,
   position:  z.coerce.number().int().default(0),
 });
 
 const updateSchema = z.object({
   name:             z.string().min(2).optional(),
   slug:             z.string().min(2).regex(/^[a-z0-9-]+$/).optional(),
-  shortDescription: z.string().optional().nullable(),
-  description:      z.string().optional().nullable(),
+  shortDescription: nullableString,
+  description:      nullableString,
   price:            z.coerce.number().positive().optional().nullable(),
   currency:         z.string().optional(),
-  sku:              z.string().optional().nullable(),
-  modelNumber:      z.string().optional().nullable(),
+  sku:              nullableString,
+  modelNumber:      nullableString,
   stockQuantity:    z.coerce.number().int().min(0).optional(),
   isActive:         z.boolean().optional(),
   isFeatured:       z.boolean().optional(),
-  brandId:          z.string().optional().nullable(),
-  categoryId:       z.string().optional().nullable(),
+  brandId:          nullableString,
+  categoryId:       nullableString,
   images:           z.array(imageSchema).optional(),
 });
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
+/** Derive Cloudinary public ID from URL if publicId is blank.
+ *  e.g. https://res.cloudinary.com/demo/image/upload/v123/folder/file.png → folder/file
+ */
+function extractPublicId(publicId: string, imageUrl: string): string {
+  if (publicId.trim()) return publicId.trim();
+  try {
+    const url = new URL(imageUrl);
+    const parts = url.pathname.split("/upload/");
+    if (parts[1]) {
+      return parts[1].replace(/^v\d+\//, "").replace(/\.[^.]+$/, "");
+    }
+  } catch {}
+  return imageUrl; // fallback — won't be used for deletion but won't break
+}
 
 /** Delete Cloudinary files for a list of image rows — best-effort, logs warnings. */
 async function purgeCloudinaryImages(
@@ -108,12 +109,13 @@ export async function PATCH(
 
   const parsed = updateSchema.safeParse(body);
   if (!parsed.success) {
+    console.error("❌ Validation errors:", JSON.stringify(parsed.error.flatten().fieldErrors, null, 2));
     return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 422 });
   }
 
   const { images, ...data } = parsed.data;
 
-  // Slug uniqueness check (skip if slug not changing)
+  // Slug uniqueness check
   if (data.slug) {
     const conflict = await prisma.product.findFirst({
       where: { slug: data.slug, NOT: { id } },
@@ -141,7 +143,7 @@ export async function PATCH(
           data: images.map((img) => ({
             productId:          id,
             imageUrl:           img.imageUrl,
-            cloudinaryPublicId: img.publicId,
+            cloudinaryPublicId: extractPublicId(img.publicId, img.imageUrl),
             altText:            img.altText ?? null,
             position:           img.position,
           })),
@@ -174,16 +176,13 @@ export async function DELETE(
 
   const { id } = await params;
 
-  // Collect Cloudinary public IDs before deleting the DB record
   const images = await prisma.productImage.findMany({
     where:  { productId: id },
     select: { cloudinaryPublicId: true },
   });
 
-  // Delete from Cloudinary (best-effort — don't let this block the DB delete)
   await purgeCloudinaryImages(images);
 
-  // Hard delete — DB cascade removes ProductImage, Variant, Attribute, Document rows
   await prisma.product.delete({ where: { id } });
 
   return NextResponse.json({ deleted: true });

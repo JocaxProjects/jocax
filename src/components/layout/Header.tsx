@@ -8,6 +8,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 
 import { useState, useEffect, useRef, useCallback } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -26,15 +27,15 @@ function isActive(pathname: string, href: string) {
 }
 
 export default function Header() {
-  const pathname                    = usePathname();
-  const [menuOpen, setMenuOpen]     = useState(false);
-  const [scrolled, setScrolled]     = useState(false);
-  const [searchOpen, setSearchOpen] = useState(false);
+  const pathname                      = usePathname();
+  const [menuOpen, setMenuOpen]       = useState(false);
+  const [scrolled, setScrolled]       = useState(false);
+  const [searchOpen, setSearchOpen]   = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const searchRef                   = useRef<HTMLInputElement>(null);
-  const mobileSearchRef             = useRef<HTMLInputElement>(null);
-  const prevPathnameRef             = useRef(pathname);
-  const menuButtonRef               = useRef<HTMLButtonElement>(null);
+  const searchRef                     = useRef<HTMLInputElement>(null);
+  const mobileSearchRef               = useRef<HTMLInputElement>(null);
+  const prevPathnameRef               = useRef(pathname);
+  const menuButtonRef                 = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -80,7 +81,32 @@ export default function Header() {
 
   return (
     <>
-      {/* ── Skip to content — globals.css .skip-to-content ── */}
+      {/* ── Hidden SVG filters ── */}
+      <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <defs>
+          <filter id="logo-recolor" colorInterpolationFilters="sRGB">
+            {/*
+              feColorMatrix: each row maps [R, G, B, A, offset] → output channel.
+              Dark pixels (navy/black: low R,G,B) → white/light-gray.
+              Gold pixels (high R, high G, low B) → stay warm gold.
+              Row logic:
+                R_out = 0.8R + 0.8G + 0.8B + 0.18   → dark→white, gold stays bright
+                G_out = 0.7R + 0.7G + 0.4B + 0.18   → preserves gold's green warmth
+                B_out = 0.1R + 0.1G + 0.1B + 0.18   → kills blue channel (removes navy blue cast)
+                A_out = original alpha
+            */}
+            <feColorMatrix
+              type="matrix"
+              values="0.8  0.8  0.8  0  0.18
+                      0.7  0.7  0.4  0  0.18
+                      0.1  0.1  0.1  0  0.18
+                      0    0    0    1  0"
+            />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* ── Skip to content ── */}
       <a href="#main-content" className="skip-to-content">
         Skip to content
       </a>
@@ -96,7 +122,15 @@ export default function Header() {
 
           {/* ── Logo ─────────────────────────────────────────────────── */}
           <Link href="/" aria-label="Jocax Solutions — home" className="jx-logo">
-            JOCAX<span className="jx-logo__dot">.</span>
+            <Image
+              src="/logo.png"
+              alt="Jocax Solutions"
+              width={180}
+              height={60}
+              className="jx-logo__img"
+              priority
+              style={{ background: "transparent" }}
+            />
           </Link>
 
           {/* ── Desktop inline search ─────────────────────────────────── */}
@@ -149,7 +183,6 @@ export default function Header() {
 
           {/* ── Mobile controls ──────────────────────────────────────── */}
           <div className="jx-mobile-controls" aria-label="Mobile menu controls">
-            {/* Search toggle */}
             <button
               type="button"
               aria-label={searchOpen ? "Close search" : "Open search"}
@@ -169,7 +202,6 @@ export default function Header() {
               )}
             </button>
 
-            {/* Hamburger */}
             <button
               ref={menuButtonRef}
               type="button"
@@ -239,12 +271,9 @@ export default function Header() {
         aria-hidden={!menuOpen}
         className={`jx-drawer${menuOpen ? " jx-drawer--open" : ""}`}
       >
-        {/* Ambient glow */}
         <div className="jx-drawer__glow" aria-hidden="true" />
 
         <nav aria-label="Mobile navigation" className="jx-drawer__nav">
-
-          {/* Section label — .eyebrow-light from globals.css */}
           <p className="eyebrow-light jx-drawer__eyebrow">Navigation</p>
 
           <ul role="list" className="jx-drawer__list">
@@ -274,7 +303,6 @@ export default function Header() {
             })}
           </ul>
 
-          {/* CTA card */}
           <div className="jx-drawer__cta">
             <p className="eyebrow-light jx-drawer__cta-eyebrow">
               Ready to equip your kitchen?
@@ -298,7 +326,19 @@ export default function Header() {
         {/* Drawer footer */}
         <div className="jx-drawer__footer">
           <span className="jx-drawer__footer-logo">
-            JOCAX<span className="jx-logo__dot">.</span>
+            <Image
+              src="/logo.png"
+              alt="Jocax Solutions"
+              width={110}
+              height={38}
+              style={{
+                height: "34px",
+                width: "auto",
+                objectFit: "contain",
+                background: "transparent",
+                filter: "url(#logo-recolor)",
+              }}
+            />
           </span>
           <small className="jx-drawer__footer-copy">
             © {new Date().getFullYear()} Jocax Solutions Limited
@@ -316,19 +356,13 @@ export default function Header() {
       )}
 
       {/* ════════════════════════════════════════════════════════════════
-          STYLES — fully token-driven from globals.css
-          Mobile-first: base = mobile, media queries scale up
+          STYLES
       ════════════════════════════════════════════════════════════════ */}
       <style>{`
-
-        /* ── HEADER ROOT ───────────────────────────────────────────────
-           Uses --nav-height-mobile on mobile, --nav-height on desktop.
-           CSS custom property overridden in globals.css at <768px already.
-        ── */
         .jx-header {
           position:             fixed;
           inset:                0 0 auto 0;
-          height:               var(--nav-height-mobile);  /* 3.5rem mobile */
+          height:               var(--nav-height-mobile);
           z-index:              var(--z-sticky);
           background:           rgba(13, 13, 13, 0.82);
           backdrop-filter:      blur(16px);
@@ -346,61 +380,66 @@ export default function Header() {
           box-shadow:    var(--shadow-lg);
         }
 
-        /* ── HEADER INNER ── */
         .jx-header__inner {
-          height:         100%;
-          display:        flex;
-          align-items:    center;
-          justify-content:space-between;
-          gap:            var(--space-3);
+          height:          100%;
+          display:         flex;
+          align-items:     center;
+          justify-content: space-between;
+          gap:             var(--space-3);
         }
 
-        /* ── LOGO ─────────────────────────────────────────────────────
-           Uses --font-display, --color-white, --color-amber from tokens.
-        ── */
+        /* ── LOGO ── */
         .jx-logo {
-          font-family:    var(--font-display);
-          font-weight:    900;
-          /* Fluid: 1.05rem (mobile) → 1.35rem (desktop) */
-          font-size:      clamp(1.05rem, 2.5vw, 1.35rem);
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          color:          var(--color-white);
-          flex-shrink:    0;
-          line-height:    var(--leading-none);
-          text-decoration:none;
-          display:        inline-flex;
-          align-items:    baseline;
-          gap:            1px;
-          transition:     opacity var(--transition-fast);
+          display:         inline-flex;
+          align-items:     center;
+          flex-shrink:     0;
+          text-decoration: none;
+          transition:      opacity var(--transition-fast);
+          background:      transparent !important;
         }
-        .jx-logo:hover  { opacity: 0.85; }
+        .jx-logo:hover { opacity: 0.85; }
         .jx-logo:focus-visible {
           outline:        3px solid var(--color-amber);
           outline-offset: 4px;
           border-radius:  var(--radius-sm);
         }
-        .jx-logo__dot { color: var(--color-amber); }
+        .jx-logo__img {
+          height:     clamp(38px, 5vw, 56px);
+          width:      auto;
+          object-fit: contain;
+          display:    block;
+          background: transparent !important;
+          /*
+           * ✅ LOGO RECOLOR: SVG feColorMatrix converts dark navy/black pixels
+           * to white/light-gray while leaving amber/gold largely intact.
+           * Gold survives because it has high R+G values which the matrix
+           * maps to warm output; dark pixels (low R,G,B) map to near-white.
+           */
+          filter: url(#logo-recolor);
+        }
+        /* Next.js Image wrapper span — force transparent */
+        .jx-logo span,
+        .jx-logo > span {
+          background: transparent !important;
+        }
 
-        /* ── DESKTOP SEARCH (hidden mobile, shown ≥1024px) ─────────── */
         .jx-search-desktop {
-          display:   none;   /* mobile-first: hidden */
+          display:   none;
           flex:      1;
           max-width: 340px;
           position:  relative;
         }
         .jx-search-icon {
-          position:      absolute;
-          left:          var(--space-3);
-          top:           50%;
-          transform:     translateY(-50%);
-          color:         var(--color-text-muted);
-          pointer-events:none;
-          display:       flex;
-          align-items:   center;
+          position:       absolute;
+          left:           var(--space-3);
+          top:            50%;
+          transform:      translateY(-50%);
+          color:          var(--color-text-muted);
+          pointer-events: none;
+          display:        flex;
+          align-items:    center;
         }
         .jx-search-input {
-          /* Inherits globals.css base input styles */
           padding-left:  2.25rem !important;
           padding-right: var(--space-3) !important;
           background:    rgba(255, 255, 255, 0.07) !important;
@@ -421,76 +460,63 @@ export default function Header() {
           box-shadow:   0 0 0 3px rgba(232, 160, 32, 0.12) !important;
           outline:      none !important;
         }
-        /* Cancel button browser default */
         .jx-search-input::-webkit-search-cancel-button { display: none; }
 
-        /* ── DESKTOP NAV (hidden mobile, shown ≥768px) ─────────────── */
-        .jx-nav-desktop { display: none; } /* mobile-first */
+        .jx-nav-desktop { display: none; }
         .jx-nav-list {
-          display:    flex;
-          align-items:center;
-          /* Fluid gap: tighter on tablet, wider on desktop */
-          gap:        clamp(var(--space-2), 1.5vw, var(--space-5));
-          list-style: none;
-          margin:     0;
-          padding:    0;
+          display:     flex;
+          align-items: center;
+          gap:         clamp(var(--space-2), 1.5vw, var(--space-5));
+          list-style:  none;
+          margin:      0;
+          padding:     0;
         }
 
-        /* ── DESKTOP NAV LINKS ─────────────────────────────────────────
-           Uses globals.css tokens: --text-sm, --tracking-wider,
-           --color-amber, --transition-fast, --radius-sm
-        ── */
         .jx-nav-link {
-          position:       relative;
-          display:        inline-flex;
-          flex-direction: column;
-          align-items:    center;
-          gap:            3px;
-          color:          rgba(255, 255, 255, 0.55);
-          font-size:      var(--text-sm);
-          font-weight:    600;
-          letter-spacing: var(--tracking-wider);
-          text-transform: uppercase;
-          text-decoration:none;
-          /* 44px tap area via padding */
-          padding:        calc((44px - 1lh) / 2) 0;
-          white-space:    nowrap;
-          transition:     color var(--transition-fast);
+          position:        relative;
+          display:         inline-flex;
+          flex-direction:  column;
+          align-items:     center;
+          gap:             3px;
+          color:           rgba(255, 255, 255, 0.55);
+          font-size:       var(--text-sm);
+          font-weight:     600;
+          letter-spacing:  var(--tracking-wider);
+          text-transform:  uppercase;
+          text-decoration: none;
+          padding:         calc((44px - 1lh) / 2) 0;
+          white-space:     nowrap;
+          transition:      color var(--transition-fast);
         }
-        .jx-nav-link:hover { color: var(--color-white); }
-        .jx-nav-link--active { color: var(--color-amber); }
-        .jx-nav-link--active:hover { color: var(--color-amber-light); }
+        .jx-nav-link:hover           { color: var(--color-white); }
+        .jx-nav-link--active         { color: var(--color-amber); }
+        .jx-nav-link--active:hover   { color: var(--color-amber-light); }
         .jx-nav-link:focus-visible {
           outline:        3px solid var(--color-amber);
           outline-offset: 4px;
           border-radius:  var(--radius-sm);
         }
-        /* Animated underline pip */
         .jx-nav-link__pip {
-          display:         block;
-          width:           100%;
-          height:          2px;
-          background:      var(--color-amber);
-          border-radius:   var(--radius-full);
-          transform-origin:center;
-          animation:       pipIn 0.25s var(--transition-spring) both;
+          display:          block;
+          width:            100%;
+          height:           2px;
+          background:       var(--color-amber);
+          border-radius:    var(--radius-full);
+          transform-origin: center;
+          animation:        pipIn 0.25s var(--transition-spring) both;
         }
         @keyframes pipIn {
           from { transform: scaleX(0); opacity: 0; }
           to   { transform: scaleX(1); opacity: 1; }
         }
 
-        /* ── MOBILE CONTROLS ─────────────────────────────────────────── */
         .jx-mobile-controls {
-          display:    flex;
-          align-items:center;
-          gap:        var(--space-1);
-          flex-shrink:0;
+          display:     flex;
+          align-items: center;
+          gap:         var(--space-1);
+          flex-shrink: 0;
         }
 
-        /* ── ICON BUTTON (search + close) ──────────────────────────────
-           44×44 touch target per WCAG 2.5.5
-        ── */
         .jx-icon-btn {
           background:      none;
           border:          none;
@@ -503,20 +529,17 @@ export default function Header() {
           color:           rgba(255, 255, 255, 0.45);
           border-radius:   var(--radius-md);
           transition:
-            color       var(--transition-fast),
-            background  var(--transition-fast);
+            color      var(--transition-fast),
+            background var(--transition-fast);
         }
-        .jx-icon-btn:hover    { color: var(--color-white); background: rgba(255, 255, 255, 0.07); }
-        .jx-icon-btn--active  { color: var(--color-amber); background: var(--color-amber-muted); }
+        .jx-icon-btn:hover         { color: var(--color-white); background: rgba(255, 255, 255, 0.07); }
+        .jx-icon-btn--active       { color: var(--color-amber); background: var(--color-amber-muted); }
         .jx-icon-btn--active:hover { color: var(--color-amber-light); }
         .jx-icon-btn:focus-visible {
           outline:        3px solid var(--color-amber);
           outline-offset: 2px;
         }
 
-        /* ── HAMBURGER BUTTON ──────────────────────────────────────────
-           3 animated bars; transforms to X when open.
-        ── */
         .jx-hamburger {
           background:      transparent;
           border:          none;
@@ -532,17 +555,17 @@ export default function Header() {
           border-radius:   var(--radius-md);
           transition:      background var(--transition-fast);
         }
-        .jx-hamburger:hover    { background: rgba(255, 255, 255, 0.06); }
+        .jx-hamburger:hover { background: rgba(255, 255, 255, 0.06); }
         .jx-hamburger:focus-visible {
           outline:        3px solid var(--color-amber);
           outline-offset: 2px;
         }
         .jx-hamburger__bar {
-          display:         block;
-          height:          2px;
-          background:      var(--color-white);
-          border-radius:   var(--radius-full);
-          transform-origin:center;
+          display:          block;
+          height:           2px;
+          background:       var(--color-white);
+          border-radius:    var(--radius-full);
+          transform-origin: center;
           transition:
             transform var(--transition-base),
             opacity   var(--transition-base),
@@ -551,50 +574,41 @@ export default function Header() {
         .jx-hamburger__bar--top    { width: 22px; }
         .jx-hamburger__bar--mid    { width: 22px; }
         .jx-hamburger__bar--bottom { width: 22px; }
-        /* Open state → X */
         .jx-hamburger--open .jx-hamburger__bar--top    { transform: translateY(7px) rotate(45deg); }
         .jx-hamburger--open .jx-hamburger__bar--mid    { opacity: 0; width: 0; }
         .jx-hamburger--open .jx-hamburger__bar--bottom { transform: translateY(-7px) rotate(-45deg); }
 
-        /* ── MOBILE SEARCH PANEL ───────────────────────────────────────
-           Collapses to 0 height when closed; uses visibility for a11y.
-           Token: --transition-base, --color-border-dark
-        ── */
         .jx-search-mobile {
-          overflow:   hidden;
-          max-height: 0;
-          visibility: hidden;
-          opacity:    0;
+          overflow:    hidden;
+          max-height:  0;
+          visibility:  hidden;
+          opacity:     0;
           transition:
             max-height var(--transition-base),
             visibility var(--transition-base),
             opacity    var(--transition-base);
-          border-top: 0px solid rgba(232, 160, 32, 0.12);
-          background: rgba(10, 10, 10, 0.98);
+          border-top:  0px solid rgba(232, 160, 32, 0.12);
+          background:  rgba(10, 10, 10, 0.98);
         }
         .jx-search-mobile--open {
-          max-height: 88px;
-          visibility: visible;
-          opacity:    1;
+          max-height:       88px;
+          visibility:       visible;
+          opacity:          1;
           border-top-width: 1px;
         }
-        .jx-search-mobile__inner {
-          padding: var(--space-3) var(--page-padding-x);
-        }
+        .jx-search-mobile__inner { padding: var(--space-3) var(--page-padding-x); }
         .jx-search-mobile__field {
-          position: relative;
-          display:  flex;
+          position:    relative;
+          display:     flex;
           align-items: center;
         }
         .jx-search-mobile__field .jx-search-icon {
-          left: var(--space-3);
-          top: 50%;
+          left:      var(--space-3);
+          top:       50%;
           transform: translateY(-50%);
-          z-index: 1;
+          z-index:   1;
         }
-        .jx-search-input--mobile {
-          font-size: var(--text-base) !important;
-        }
+        .jx-search-input--mobile { font-size: var(--text-base) !important; }
         .jx-search-clear {
           position:        absolute;
           right:           var(--space-3);
@@ -614,10 +628,6 @@ export default function Header() {
         }
         .jx-search-clear:hover { color: var(--color-white); }
 
-        /* ── MOBILE DRAWER ─────────────────────────────────────────────
-           Full-screen slide-in from right.
-           Tokens: --z-overlay, --transition-slow, --color-border-dark
-        ── */
         .jx-drawer {
           position:             fixed;
           inset:                var(--nav-height-mobile) 0 0 0;
@@ -633,25 +643,20 @@ export default function Header() {
           transition:           transform 0.38s cubic-bezier(0.4, 0, 0.2, 1);
           border-top:           1px solid rgba(232, 160, 32, 0.15);
           pointer-events:       none;
-          /* smooth scroll within drawer */
           -webkit-overflow-scrolling: touch;
         }
-        .jx-drawer--open {
-          transform:     translateX(0);
-          pointer-events:auto;
-        }
+        .jx-drawer--open { transform: translateX(0); pointer-events: auto; }
         .jx-drawer__glow {
-          position:      absolute;
-          top:           0;
-          right:         0;
-          width:         min(40vw, 280px);
-          height:        min(40vw, 280px);
-          background:    radial-gradient(circle, rgba(232, 160, 32, 0.07) 0%, transparent 70%);
-          pointer-events:none;
-          z-index:       0;
+          position:       absolute;
+          top:            0;
+          right:          0;
+          width:          min(40vw, 280px);
+          height:         min(40vw, 280px);
+          background:     radial-gradient(circle, rgba(232, 160, 32, 0.07) 0%, transparent 70%);
+          pointer-events: none;
+          z-index:        0;
         }
 
-        /* Drawer nav */
         .jx-drawer__nav {
           position:       relative;
           z-index:        1;
@@ -661,70 +666,46 @@ export default function Header() {
           flex-direction: column;
           gap:            var(--space-2);
         }
-        .jx-drawer__eyebrow {
-          /* .eyebrow-light from globals.css */
-          margin-bottom: var(--space-4);
-          opacity:       0.65;
-        }
-        .jx-drawer__list {
-          list-style: none;
-          margin:     0;
-          padding:    0;
-        }
+        .jx-drawer__eyebrow { margin-bottom: var(--space-4); opacity: 0.65; }
+        .jx-drawer__list    { list-style: none; margin: 0; padding: 0; }
 
-        /* Drawer link items */
-        .jx-drawer__item {
-          border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-        }
-        /* Stagger animation — applied when drawer opens */
-        .jx-drawer__item--animate {
-          animation: drawerItemIn 0.4s ease both;
-        }
+        .jx-drawer__item { border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+        .jx-drawer__item--animate { animation: drawerItemIn 0.4s ease both; }
         @keyframes drawerItemIn {
           from { opacity: 0; transform: translateX(20px); }
           to   { opacity: 1; transform: translateX(0); }
         }
         .jx-drawer__link {
-          display:        flex;
-          align-items:    center;
-          justify-content:space-between;
-          padding:        var(--space-4) 0;
-          font-family:    var(--font-display);
-          font-weight:    600;
-          /* Fluid: 1.1rem mobile → 1.35rem tablet */
-          font-size:      clamp(1.1rem, 4vw, 1.35rem);
-          letter-spacing: var(--tracking-normal);
-          /* Sentence case — too large for uppercase */
-          text-transform: none;
-          color:          rgba(255, 255, 255, 0.80);
-          text-decoration:none;
-          min-height:     3rem;  /* generous touch target */
+          display:         flex;
+          align-items:     center;
+          justify-content: space-between;
+          padding:         var(--space-4) 0;
+          font-family:     var(--font-display);
+          font-weight:     600;
+          font-size:       clamp(1.1rem, 4vw, 1.35rem);
+          letter-spacing:  var(--tracking-normal);
+          text-transform:  none;
+          color:           rgba(255, 255, 255, 0.80);
+          text-decoration: none;
+          min-height:      3rem;
           transition:
-            color       var(--transition-fast),
+            color        var(--transition-fast),
             padding-left var(--transition-fast);
         }
-        .jx-drawer__link:hover {
-          color:        var(--color-amber-light);
-          padding-left: var(--space-2);
-        }
-        .jx-drawer__link--active {
-          color:       var(--color-amber);
-          font-weight: 800;
-        }
-        .jx-drawer__link--active .jx-drawer__link-arrow {
-          color: var(--color-amber);
-        }
+        .jx-drawer__link:hover          { color: var(--color-amber-light); padding-left: var(--space-2); }
+        .jx-drawer__link--active        { color: var(--color-amber); font-weight: 800; }
+        .jx-drawer__link--active .jx-drawer__link-arrow { color: var(--color-amber); }
         .jx-drawer__link:focus-visible {
           outline:        3px solid var(--color-amber);
           outline-offset: 3px;
           border-radius:  var(--radius-sm);
         }
-        .jx-drawer__link-text { flex: 1; }
+        .jx-drawer__link-text  { flex: 1; }
         .jx-drawer__link-arrow {
-          color:      rgba(255, 255, 255, 0.18);
-          flex-shrink:0;
-          display:    flex;
-          align-items:center;
+          color:       rgba(255, 255, 255, 0.18);
+          flex-shrink: 0;
+          display:     flex;
+          align-items: center;
           transition:
             transform var(--transition-fast),
             color     var(--transition-fast);
@@ -734,31 +715,24 @@ export default function Header() {
           color:     rgba(232, 160, 32, 0.6);
         }
 
-        /* Drawer CTA card — .surface-dark + amber-muted from globals.css */
         .jx-drawer__cta {
           margin-top:    var(--space-8);
           padding:       var(--space-6);
           background:    var(--color-amber-muted);
           border:        1px solid rgba(232, 160, 32, 0.22);
           border-radius: var(--radius-lg);
-          /* animate-fade-up from globals.css pattern */
           animation:     fade-up 0.5s ease 0.35s both;
         }
         .jx-drawer__cta-eyebrow { margin-bottom: var(--space-2); }
         .jx-drawer__cta-body {
-          font-size:    var(--text-base);
-          color:        rgba(255, 255, 255, 0.60);
-          margin-bottom:var(--space-4);
-          line-height:  var(--leading-relaxed);
-          max-width:    none;
+          font-size:     var(--text-base);
+          color:         rgba(255, 255, 255, 0.60);
+          margin-bottom: var(--space-4);
+          line-height:   var(--leading-relaxed);
+          max-width:     none;
         }
-        .jx-drawer__cta-btn {
-          width:           100%;
-          justify-content: center;
-          gap:             var(--space-2);
-        }
+        .jx-drawer__cta-btn { width: 100%; justify-content: center; gap: var(--space-2); }
 
-        /* Drawer footer */
         .jx-drawer__footer {
           position:        relative;
           z-index:         1;
@@ -771,133 +745,73 @@ export default function Header() {
           flex-wrap:       wrap;
         }
         .jx-drawer__footer-logo {
-          font-family:    var(--font-display);
-          font-weight:    900;
-          font-size:      var(--text-md);
-          letter-spacing: 0.06em;
-          text-transform: uppercase;
-          color:          var(--color-white);
+          display:    flex;
+          align-items:center;
+          background: transparent !important;
         }
-        .jx-drawer__footer-copy {
-          font-size: var(--text-sm);
-          color:     var(--color-text-muted);
-        }
+        .jx-drawer__footer-copy { font-size: var(--text-sm); color: var(--color-text-muted); }
 
-        /* ── BACKDROP ──────────────────────────────────────────────────
-           z-index: overlay - 1 → blocks page, below drawer.
-        ── */
         .jx-backdrop {
           position:   fixed;
           inset:      0;
           z-index:    calc(var(--z-overlay) - 1);
           background: rgba(0, 0, 0, 0.55);
           cursor:     pointer;
-          /* animate-fade-in from globals.css */
           animation:  fade-in 0.25s ease both;
         }
 
-        /* ══════════════════════════════════════════════════════════════
-           RESPONSIVE BREAKPOINTS — mobile-first scale-up
-        ══════════════════════════════════════════════════════════════ */
-
-        /* ── XS: 320–479px — smallest phones ── */
+        /* ── RESPONSIVE ── */
         @media (max-width: 359px) {
-          .jx-logo { font-size: 1rem; }
-          /* Tighten inner gap for ultra-narrow */
+          .jx-logo__img     { height: 34px; }
           .jx-header__inner { gap: var(--space-2); }
         }
-
-        /* ── SM: 480–767px — larger phones ── */
         @media (min-width: 480px) {
-          .jx-drawer__link {
-            font-size: clamp(1.15rem, 3.5vw, 1.4rem);
-          }
+          .jx-drawer__link { font-size: clamp(1.15rem, 3.5vw, 1.4rem); }
         }
-
-        /* ── MD: 768px — tablets, iPad portrait ── */
         @media (min-width: 768px) {
-          /* Show desktop nav; hide mobile controls */
-          .jx-nav-desktop      { display: flex !important; }
-          .jx-mobile-controls  { display: none  !important; }
-          /* Drawer and mobile search are unreachable — hide from DOM flow */
-          .jx-drawer           { display: none  !important; }
-          .jx-search-mobile    { display: none  !important; }
-          /* Full nav height */
-          .jx-header           { height: var(--nav-height); }  /* 4.25rem */
+          .jx-nav-desktop     { display: flex !important; }
+          .jx-mobile-controls { display: none  !important; }
+          .jx-drawer          { display: none  !important; }
+          .jx-search-mobile   { display: none  !important; }
+          .jx-header          { height: var(--nav-height); }
         }
-
-        /* ── LG: 1024px — laptops, iPad landscape ── */
         @media (min-width: 1024px) {
-          /* Reveal inline search bar */
           .jx-search-desktop { display: flex !important; }
-          /* Slightly larger logo */
-          .jx-logo { font-size: clamp(1.15rem, 2vw, 1.35rem); }
+          .jx-logo__img      { height: 56px; }
         }
-
-        /* ── XL: 1280px — large desktops ── */
         @media (min-width: 1280px) {
-          .jx-nav-list {
-            gap: var(--space-6);
-          }
-          .jx-search-desktop {
-            max-width: 400px;
-          }
+          .jx-nav-list       { gap: var(--space-6); }
+          .jx-search-desktop { max-width: 400px; }
         }
-
-        /* ── 2XL: 1536px — wide monitors ── */
         @media (min-width: 1536px) {
           .jx-search-desktop { max-width: 480px; }
         }
-
-        /* ── Touch device adjustments ─────────────────────────────────
-           Override hover transforms on coarse-pointer devices.
-           Mirrors globals.css @media (hover: none) and (pointer: coarse)
-        ── */
         @media (hover: none) and (pointer: coarse) {
-          .jx-nav-link:hover  { color: rgba(255, 255, 255, 0.55); }
-          .jx-icon-btn:hover  { background: none; }
-          .jx-hamburger:hover { background: transparent; }
-          /* Active states instead */
-          .jx-icon-btn:active { background: rgba(255, 255, 255, 0.10); }
-          .jx-hamburger:active { background: rgba(255, 255, 255, 0.08); }
-          /* Drawer links: ensure generous tap area */
-          .jx-drawer__link   { min-height: 3.25rem; }
-          /* Disable slide-left on hover for drawer links */
+          .jx-nav-link:hover     { color: rgba(255, 255, 255, 0.55); }
+          .jx-icon-btn:hover     { background: none; }
+          .jx-hamburger:hover    { background: transparent; }
+          .jx-icon-btn:active    { background: rgba(255, 255, 255, 0.10); }
+          .jx-hamburger:active   { background: rgba(255, 255, 255, 0.08); }
+          .jx-drawer__link       { min-height: 3.25rem; }
           .jx-drawer__link:hover { padding-left: 0; }
         }
-
-        /* ── Reduced motion ────────────────────────────────────────────
-           Mirrors globals.css @media (prefers-reduced-motion: reduce)
-        ── */
         @media (prefers-reduced-motion: reduce) {
-          .jx-drawer  { transition: none; }
-          .jx-header  { transition: none; }
+          .jx-drawer, .jx-header, .jx-search-mobile { transition: none; }
           .jx-drawer__item--animate,
           .jx-drawer__cta,
           .jx-nav-link__pip,
           .jx-backdrop { animation: none !important; }
-          .jx-search-mobile { transition: none; }
         }
-
-        /* ── Forced colors (Windows High Contrast) ─────────────────────
-           Mirrors globals.css @media (forced-colors: active)
-        ── */
         @media (forced-colors: active) {
-          .jx-header          { border-bottom: 1px solid ButtonText; }
+          .jx-header           { border-bottom: 1px solid ButtonText; }
           .jx-nav-link--active { color: Highlight; border-bottom-color: Highlight; }
           .jx-icon-btn,
-          .jx-hamburger       { border: 1px solid ButtonText; }
-          .jx-drawer          { border: 1px solid ButtonText; }
-          .jx-backdrop        { background: rgba(0,0,0,0.7); forced-color-adjust: none; }
+          .jx-hamburger        { border: 1px solid ButtonText; }
+          .jx-drawer           { border: 1px solid ButtonText; }
+          .jx-backdrop         { background: rgba(0,0,0,0.7); forced-color-adjust: none; }
         }
-
-        /* ── Print ─────────────────────────────────────────────────────
-           Mirrors globals.css @media print — hide nav entirely
-        ── */
         @media print {
-          .jx-header,
-          .jx-drawer,
-          .jx-backdrop { display: none !important; }
+          .jx-header, .jx-drawer, .jx-backdrop { display: none !important; }
         }
       `}</style>
     </>

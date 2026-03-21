@@ -6,13 +6,13 @@ import { prisma } from "@/lib/prisma";
 import ProductForm from "@/components/admin/ProductForm";
 
 interface PageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 async function getProduct(id: string) {
   const [product, brands, categories] = await Promise.all([
     prisma.product.findUnique({
-      where: { id }, // If your ID is Int, use: where: { id: Number(id) }
+      where: { id },
       select: {
         id: true,
         name: true,
@@ -52,7 +52,7 @@ async function getProduct(id: string) {
 }
 
 export default async function EditProductPage({ params }: PageProps) {
-  const { id } = params;
+  const { id } = await params;
 
   const { product, brands, categories } = await getProduct(id);
 

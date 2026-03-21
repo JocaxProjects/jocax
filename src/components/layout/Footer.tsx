@@ -9,6 +9,7 @@
 //   • All existing responsive breakpoints and a11y improvements preserved
 
 import Link from "next/link";
+import Image from "next/image";
 
 const FOOTER_CATALOG = [
   { href: "/categories/ovens-ranges",  label: "Ovens & Ranges" },
@@ -108,10 +109,27 @@ export default function Footer() {
       }}
     >
 
+      {/* ── Hidden SVG filter — same recolor as Header ── */}
+      <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
+        <defs>
+          <filter id="footer-logo-recolor" colorInterpolationFilters="sRGB">
+            {/*
+              Dark navy/black pixels → white/light-gray.
+              Amber/gold pixels (high R+G, low B) → stay warm gold.
+            */}
+            <feColorMatrix
+              type="matrix"
+              values="0.8  0.8  0.8  0  0.18
+                      0.7  0.7  0.4  0  0.18
+                      0.1  0.1  0.1  0  0.18
+                      0    0    0    1  0"
+            />
+          </filter>
+        </defs>
+      </svg>
+
       {/* ══════════════════════════════════════════════════════════════════
           CTA BANNER
-          Mobile:  centered stack — headline → body → full-width button
-          Tablet+: side-by-side — text left, button right
       ══════════════════════════════════════════════════════════════════ */}
       <div style={{
         background:   "var(--color-amber)",
@@ -154,19 +172,20 @@ export default function Footer() {
           {/* ── Brand column ─────────────────────────────────────────── */}
           <div className="footer-brand-col">
 
-            {/* Logo */}
+            {/* Logo — real image with SVG recolor filter */}
             <Link
               href="/"
               aria-label="Jocax Solutions — home"
-              style={{
-                fontFamily: "var(--font-display)", fontWeight: 900,
-                fontSize: "var(--text-xl)", letterSpacing: "0.06em",
-                textTransform: "uppercase", color: "var(--color-white)",
-                display: "inline-block", marginBottom: "var(--space-4)",
-                textDecoration: "none",
-              }}
+              className="footer-logo-link"
             >
-              JOCAX<span style={{ color: "var(--color-amber)" }}>.</span>
+              <Image
+                src="/logo.png"
+                alt="Jocax Solutions"
+                width={180}
+                height={60}
+                className="footer-logo-img"
+                style={{ background: "transparent" }}
+              />
             </Link>
 
             {/* Description */}
@@ -183,7 +202,6 @@ export default function Footer() {
             <div style={{
               display: "flex", gap: "var(--space-2)",
               marginTop: "var(--space-6)",
-              /* Mobile: center the icon row */
               justifyContent: "center",
             }}>
               {SOCIAL_LINKS.map(({ href, label, icon }) => (
@@ -205,7 +223,6 @@ export default function Footer() {
               marginTop: "var(--space-6)",
               display: "flex", flexDirection: "column",
               gap: "var(--space-3)",
-              /* Mobile: center contact items */
               alignItems: "center",
             }}>
               {[
@@ -251,7 +268,6 @@ export default function Footer() {
             <ul role="list" style={{
               listStyle: "none", margin: 0, padding: 0,
               display: "flex", gap: "var(--space-6)", flexWrap: "wrap",
-              /* Mobile: center legal links */
               justifyContent: "center",
             }}>
               {[
@@ -276,6 +292,42 @@ export default function Footer() {
       ══════════════════════════════════════════════════════════════════ */}
       <style>{`
 
+        /* ── Footer logo ── */
+        .footer-logo-link {
+          display:         inline-flex;
+          align-items:     center;
+          text-decoration: none;
+          margin-bottom:   var(--space-5);
+          transition:      opacity var(--transition-fast);
+          background:      transparent !important;
+        }
+        .footer-logo-link:hover { opacity: 0.85; }
+        .footer-logo-link:focus-visible {
+          outline:        3px solid var(--color-amber);
+          outline-offset: 4px;
+          border-radius:  var(--radius-sm);
+        }
+        .footer-logo-img {
+          height:     clamp(40px, 5vw, 52px);
+          width:      auto;
+          object-fit: contain;
+          display:    block;
+          background: transparent !important;
+          /*
+           * Same SVG recolor as header:
+           * navy/black → white/gray, amber/gold preserved.
+           */
+          filter: url(#footer-logo-recolor);
+        }
+        /* Tiny screens */
+        @media (max-width: 359px) {
+          .footer-logo-img { height: 34px; }
+        }
+        /* Desktop */
+        @media (min-width: 1024px) {
+          .footer-logo-img { height: 52px; }
+        }
+
         /* ── Footer link ── */
         .footer-link {
           color: var(--color-text-muted);
@@ -283,7 +335,6 @@ export default function Footer() {
           text-decoration: none;
           min-height: 44px;
           display: flex; align-items: center;
-          /* Mobile: centered in link group */
           justify-content: center;
           transition: color var(--transition-fast);
           line-height: var(--leading-normal);
@@ -294,7 +345,6 @@ export default function Footer() {
           outline-offset: 3px;
           border-radius: var(--radius-sm);
         }
-        /* Desktop: left-aligned, compact */
         @media (min-width: 1024px) {
           .footer-link {
             font-size: var(--text-sm);
@@ -309,9 +359,7 @@ export default function Footer() {
           text-align: center;
           display: flex; flex-direction: column; align-items: center;
         }
-        .footer-link-heading {
-          margin-bottom: var(--space-5);
-        }
+        .footer-link-heading { margin-bottom: var(--space-5); }
         @media (min-width: 1024px) {
           .footer-link-group { text-align: left; align-items: flex-start; }
         }
@@ -352,7 +400,6 @@ export default function Footer() {
         .footer-grid {
           display: grid; grid-template-columns: 1fr;
           gap: var(--space-10);
-          /* Mobile: all columns centered */
           justify-items: center;
           text-align: center;
         }
@@ -377,7 +424,7 @@ export default function Footer() {
         /* ── Brand column — centered on mobile, left at lg+ ── */
         .footer-brand-col {
           display: flex; flex-direction: column;
-          align-items: center;    /* mobile: center logo, desc, socials, contact */
+          align-items: center;
           text-align: center;
           width: 100%;
         }
@@ -386,11 +433,9 @@ export default function Footer() {
             align-items: flex-start;
             text-align: left;
           }
-          /* Social icons row: left-aligned at sm+ */
           .footer-brand-col > div[style*="justifyContent"] {
             justify-content: flex-start !important;
           }
-          /* Contact items: left-aligned at sm+ */
           .footer-brand-col > div:last-child {
             align-items: flex-start;
           }
@@ -399,7 +444,6 @@ export default function Footer() {
         /* ── CTA banner inner ── */
         .footer-cta-inner {
           display: flex;
-          /* Mobile: centered stack */
           flex-direction: column;
           align-items: center;
           text-align: center;
@@ -414,11 +458,8 @@ export default function Footer() {
           }
         }
         .footer-cta-text { flex: 1; }
-
-        /* CTA button: full-width on mobile, auto on sm+ */
         .footer-cta-btn {
           width: 100%; flex-shrink: 0; text-align: center;
-          /* Cap so it doesn't become a runway on wide mobile */
           max-width: 26rem;
         }
         @media (min-width: 640px) {
@@ -428,7 +469,6 @@ export default function Footer() {
         /* ── Bottom bar ── */
         .footer-bottom {
           display: flex;
-          /* Mobile: centered stack */
           flex-direction: column;
           align-items: center;
           text-align: center;
@@ -442,7 +482,6 @@ export default function Footer() {
             justify-content: space-between;
             text-align: left;
           }
-          /* Legal links: left-aligned in row layout */
           .footer-bottom nav ul { justify-content: flex-start; }
         }
       `}</style>

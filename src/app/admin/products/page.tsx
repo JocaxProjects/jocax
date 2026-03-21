@@ -1,11 +1,6 @@
 // app/admin/products/page.tsx
-//
-// Admin products index — full paginated table with filters.
-//  ✦ Server-side filtering by category, brand, active status, search query
-//  ✦ Pagination (20 per page) via URL search params
-//  ✦ Inline status toggle and delete via Server Actions
-//  ✦ Bulk-select scaffolding (UI only — wire up as needed)
 
+import { Fragment } from "react";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import type { Prisma } from "@prisma/client";
@@ -14,21 +9,21 @@ import ProductsTableActions from "@/components/admin/ProductsTableActions";
 const PAGE_SIZE = 20;
 
 interface PageProps {
-  searchParams: {
+  searchParams: Promise<{
     page?: string; q?: string; category?: string;
     brand?: string; status?: string;
-  };
+  }>;
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 
-async function getProducts(params: PageProps["searchParams"]) {
+async function getProducts(params: Awaited<PageProps["searchParams"]>) {
   const page     = Math.max(1, Number(params.page ?? 1));
   const skip     = (page - 1) * PAGE_SIZE;
   const q        = params.q?.trim();
   const category = params.category;
   const brand    = params.brand;
-  const status   = params.status; // "active" | "inactive" | undefined
+  const status   = params.status;
 
   const where: Prisma.ProductWhereInput = {
     ...(q && { name: { contains: q, mode: "insensitive" } }),
@@ -62,8 +57,9 @@ async function getProducts(params: PageProps["searchParams"]) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function AdminProductsPage({ searchParams }: PageProps) {
-  const { products, total, categories, brands, page, totalPages } = await getProducts(searchParams);
-  const q = searchParams.q ?? "";
+  const resolvedParams = await searchParams;
+  const { products, total, categories, brands, page, totalPages } = await getProducts(resolvedParams);
+  const q = resolvedParams.q ?? "";
 
   const fmt = (price: number | null, currency = "USD") =>
     price !== null
@@ -147,15 +143,15 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
           className="prod-filter-input"
           aria-label="Search products"
         />
-        <select name="category" defaultValue={searchParams.category ?? ""} className="prod-filter-select">
+        <select name="category" defaultValue={resolvedParams.category ?? ""} className="prod-filter-select">
           <option value="">All categories</option>
           {categories.map((c) => <option key={c.slug} value={c.slug}>{c.name}</option>)}
         </select>
-        <select name="brand" defaultValue={searchParams.brand ?? ""} className="prod-filter-select">
+        <select name="brand" defaultValue={resolvedParams.brand ?? ""} className="prod-filter-select">
           <option value="">All brands</option>
           {brands.map((b) => <option key={b.slug} value={b.slug}>{b.name}</option>)}
         </select>
-        <select name="status" defaultValue={searchParams.status ?? ""} className="prod-filter-select">
+        <select name="status" defaultValue={resolvedParams.status ?? ""} className="prod-filter-select">
           <option value="">All statuses</option>
           <option value="active">Active</option>
           <option value="inactive">Inactive</option>
@@ -246,7 +242,7 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
       {totalPages > 1 && (
         <div style={{ display: "flex", gap: "0.4rem", justifyContent: "center", marginTop: "1.5rem", flexWrap: "wrap" }}>
           <Link
-            href={`?${new URLSearchParams({ ...searchParams, page: String(page - 1) })}`}
+            href={`?${new URLSearchParams({ ...resolvedParams, page: String(page - 1) })}`}
             className={`page-btn${page <= 1 ? " disabled" : ""}`}
           >
             ← Prev
@@ -254,19 +250,20 @@ export default async function AdminProductsPage({ searchParams }: PageProps) {
           {Array.from({ length: totalPages }, (_, i) => i + 1)
             .filter((n) => Math.abs(n - page) <= 2 || n === 1 || n === totalPages)
             .map((n, idx, arr) => (
-              <>
-                {idx > 0 && arr[idx - 1] !== n - 1 && <span key={`dots-${n}`} style={{ padding: "0.4rem 0.4rem", color: "rgba(255,255,255,0.2)" }}>…</span>}
+              <Fragment key={n}>
+                {idx > 0 && arr[idx - 1] !== n - 1 && (
+                  <span style={{ padding: "0.4rem 0.4rem", color: "rgba(255,255,255,0.2)" }}>…</span>
+                )}
                 <Link
-                  key={n}
-                  href={`?${new URLSearchParams({ ...searchParams, page: String(n) })}`}
+                  href={`?${new URLSearchParams({ ...resolvedParams, page: String(n) })}`}
                   className={`page-btn${n === page ? " current" : ""}`}
                 >
                   {n}
                 </Link>
-              </>
+              </Fragment>
             ))}
           <Link
-            href={`?${new URLSearchParams({ ...searchParams, page: String(page + 1) })}`}
+            href={`?${new URLSearchParams({ ...resolvedParams, page: String(page + 1) })}`}
             className={`page-btn${page >= totalPages ? " disabled" : ""}`}
           >
             Next →
