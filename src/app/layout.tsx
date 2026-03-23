@@ -5,6 +5,7 @@ import { Outfit, Oswald } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import WhatsAppButton from "@/components/WhatsAppButton";
 import { headers } from "next/headers";
 
 // Body font — modern, clean, highly readable at all sizes
@@ -55,6 +56,8 @@ export default async function RootLayout({
         {!isAdmin && <Header />}
         {children}
         {!isAdmin && <Footer />}
+        {/* WhatsApp float — hidden on /admin, visible on all public pages */}
+        {!isAdmin && <WhatsAppButton />}
       </body>
     </html>
   );

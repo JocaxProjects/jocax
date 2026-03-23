@@ -113,10 +113,6 @@ export default function Footer() {
       <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
         <defs>
           <filter id="footer-logo-recolor" colorInterpolationFilters="sRGB">
-            {/*
-              Dark navy/black pixels → white/light-gray.
-              Amber/gold pixels (high R+G, low B) → stay warm gold.
-            */}
             <feColorMatrix
               type="matrix"
               values="0.8  0.8  0.8  0  0.18
@@ -219,31 +215,30 @@ export default function Footer() {
             </div>
 
             {/* Contact info */}
-            <div style={{
-              marginTop: "var(--space-6)",
-              display: "flex", flexDirection: "column",
-              gap: "var(--space-3)",
-              alignItems: "center",
-            }}>
-              {[
-                { icon: "✉",  text: "hello@jocax.com",   href: "mailto:hello@jocax.com"  },
-                { icon: "📞", text: "+1 (800) 555-0192", href: "tel:+18005550192"         },
-              ].map(({ icon, text, href }) => (
-                <a
-                  key={text}
-                  href={href}
-                  style={{
-                    fontSize: "var(--text-sm)", color: "var(--color-text-muted)",
-                    display: "flex", gap: "var(--space-2)", alignItems: "center",
-                    textDecoration: "none", minHeight: "44px",
-                    transition: "color var(--transition-fast)",
-                  }}
-                  className="footer-contact-link"
-                >
-                  <span aria-hidden="true">{icon}</span>
-                  {text}
-                </a>
-              ))}
+            <div className="footer-contact-cards">
+              <a href="mailto:hello@jocaxsolutions.co.ke" className="footer-contact-card" aria-label="Email Jocax Solutions">
+                <span className="footer-contact-card__icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <rect x="2" y="4" width="20" height="16" rx="2"/>
+                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+                  </svg>
+                </span>
+                <span className="footer-contact-card__content">
+                  <span className="footer-contact-card__label">Email us</span>
+                  <span className="footer-contact-card__value">hello@jocaxsolutions.co.ke</span>
+                </span>
+              </a>
+              <a href="tel:+254725692649" className="footer-contact-card" aria-label="Call Jocax Solutions">
+                <span className="footer-contact-card__icon" aria-hidden="true">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.84a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+                  </svg>
+                </span>
+                <span className="footer-contact-card__content">
+                  <span className="footer-contact-card__label">Call us</span>
+                  <span className="footer-contact-card__value">+254 725 692 649</span>
+                </span>
+              </a>
             </div>
           </div>
 
@@ -290,7 +285,7 @@ export default function Footer() {
       {/* ══════════════════════════════════════════════════════════════════
           STYLES
       ══════════════════════════════════════════════════════════════════ */}
-      <style>{`
+      <style href="jx-footer" precedence="default">{`
 
         /* ── Footer logo ── */
         .footer-logo-link {
@@ -364,12 +359,88 @@ export default function Footer() {
           .footer-link-group { text-align: left; align-items: flex-start; }
         }
 
-        /* ── Contact link ── */
-        .footer-contact-link:hover { color: var(--color-white); }
-        .footer-contact-link:focus-visible {
-          outline: 3px solid var(--color-amber);
+        /* ── Contact cards ── */
+        .footer-contact-cards {
+          display:        flex;
+          flex-direction: column;
+          gap:            var(--space-3);
+          margin-top:     var(--space-6);
+          width:          100%;
+          align-items:    center;
+        }
+        @media (min-width: 640px) {
+          .footer-contact-cards { align-items: flex-start; }
+        }
+        .footer-contact-card {
+          display:         flex;
+          align-items:     center;
+          gap:             var(--space-3);
+          padding:         var(--space-3) var(--space-4);
+          background:      rgba(255, 255, 255, 0.04);
+          border:          1px solid rgba(255, 255, 255, 0.07);
+          border-radius:   var(--radius-md);
+          text-decoration: none;
+          min-height:      52px;
+          width:           100%;
+          max-width:       280px;
+          transition:
+            background    var(--transition-fast),
+            border-color  var(--transition-fast),
+            transform     var(--transition-fast);
+        }
+        .footer-contact-card:hover {
+          background:   rgba(232, 160, 32, 0.08);
+          border-color: rgba(232, 160, 32, 0.30);
+          transform:    translateX(3px);
+        }
+        .footer-contact-card:focus-visible {
+          outline:        3px solid var(--color-amber);
           outline-offset: 3px;
-          border-radius: var(--radius-sm);
+          border-radius:  var(--radius-md);
+        }
+        .footer-contact-card__icon {
+          display:         flex;
+          align-items:     center;
+          justify-content: center;
+          width:           34px;
+          height:          34px;
+          background:      rgba(232, 160, 32, 0.12);
+          border:          1px solid rgba(232, 160, 32, 0.20);
+          border-radius:   var(--radius-sm);
+          color:           var(--color-amber, #E8A020);
+          flex-shrink:     0;
+          transition:      background var(--transition-fast);
+        }
+        .footer-contact-card:hover .footer-contact-card__icon {
+          background: rgba(232, 160, 32, 0.22);
+        }
+        .footer-contact-card__content {
+          display:        flex;
+          flex-direction: column;
+          gap:            2px;
+          min-width:      0;
+        }
+        .footer-contact-card__label {
+          display:        block;
+          font-size:      10px;
+          font-weight:    700;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
+          color:          var(--color-amber, #E8A020);
+          line-height:    1;
+        }
+        .footer-contact-card__value {
+          display:       block;
+          font-size:     var(--text-sm);
+          font-weight:   500;
+          color:         rgba(255, 255, 255, 0.80);
+          line-height:   1.3;
+          white-space:   nowrap;
+          overflow:      hidden;
+          text-overflow: ellipsis;
+        }
+        .footer-contact-card:hover .footer-contact-card__value {
+          color: var(--color-white);
         }
 
         /* ── Social icon ── */
