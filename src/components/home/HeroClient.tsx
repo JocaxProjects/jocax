@@ -42,6 +42,14 @@ function useBreakpoint() {
   return bp;
 }
 
+// ─── Stats data ───────────────────────────────────────────────────────────────
+
+const STATS = [
+  { value: "1,000+", label: "Products" },
+  { value: "50+",    label: "Brands"   },
+  { value: "1,000+", label: "Operations served" },
+];
+
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export default function HeroClient({ hero, mini }: HeroClientProps) {
@@ -58,68 +66,73 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
         background:          "var(--color-steel)",
         minHeight:           isMobile ? "auto" : "100vh",
         display:             "grid",
-        gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+        gridTemplateColumns: isDesktop ? "3fr 2fr" : "1fr",
         position:            "relative",
         overflow:            "hidden",
         paddingTop:          "var(--nav-height)",
       }}
     >
-      {/* Ambient radial glow */}
-      <div
-        aria-hidden="true"
-        style={{
-          position:     "absolute", inset: 0,
-          background:
-            "radial-gradient(ellipse 60% 80% at 70% 50%,rgba(232,160,32,.08) 0%,transparent 70%)," +
-            "radial-gradient(ellipse 40% 60% at 20% 80%,rgba(232,160,32,.05) 0%,transparent 60%)",
-          pointerEvents:"none",
-        }}
-      />
 
-      {/* Subtle grid texture */}
-      <div
-        aria-hidden="true"
-        style={{
-          position:        "absolute", inset: 0,
-          backgroundImage:
-            "linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px)," +
-            "linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px)",
-          backgroundSize:  "60px 60px",
-          pointerEvents:   "none",
-        }}
-      />
+
 
       {/* ══════════════════════════════════════════════════════════════════
           LEFT / TOP — Copy block
-          Mobile:  centered — h1, subtitle, buttons all centered
-          Tablet+: left-aligned
       ══════════════════════════════════════════════════════════════════ */}
       <div
         style={{
           padding: isMobile
-            ? `var(--space-10) var(--page-padding-x) var(--space-8)`
+            ? `var(--space-10) var(--page-padding-x) var(--space-6)`
             : isTablet
             ? `var(--space-12) var(--page-padding-x) var(--space-10)`
-            : `clamp(var(--space-12),8vw,var(--space-24)) var(--page-padding-x)`,
+            : `clamp(var(--space-12), 8vw, var(--space-24)) var(--page-padding-x)`,
           display:        "flex",
           flexDirection:  "column",
           justifyContent: "center",
-          /* Mobile: center all children */
-          alignItems:     isMobile ? "center" : "flex-start",
-          textAlign:      isMobile ? "center" : "left",
+          alignItems:     isMobile || isTablet ? "center" : "flex-start",
+          textAlign:      isMobile || isTablet ? "center" : "left",
           position:       "relative",
-          zIndex:         "var(--z-raised)",
+          zIndex:         1,
         }}
       >
+        {/* Eyebrow label */}
+        <p
+          style={{
+            fontFamily:    "var(--font-display)",
+            fontSize:      "var(--text-xs)",
+            fontWeight:    700,
+            letterSpacing: "var(--tracking-widest)",
+            textTransform: "uppercase",
+            color:         "var(--color-amber)",
+            marginBottom:  "var(--space-4)",
+            display:       "flex",
+            alignItems:    "center",
+            gap:           "var(--space-2)",
+          }}
+        >
+          <span
+            style={{
+              display:      "inline-block",
+              width:        "24px",
+              height:       "2px",
+              background:   "var(--color-amber)",
+              borderRadius: "2px",
+              flexShrink:   0,
+            }}
+            aria-hidden="true"
+          />
+          East Africa&apos;s Kitchen Specialists
+        </p>
+
         {/* H1 */}
         <h1
           style={{
-            color:    "var(--color-white)",
-            fontSize: isMobile
+            color:      "var(--color-white)",
+            fontSize:   isMobile
               ? "clamp(2.5rem, 10vw, 3rem)"
               : isTablet
               ? "clamp(3rem, 6vw, 4rem)"
               : "clamp(var(--text-4xl), 6vw, var(--text-6xl))",
+            marginBottom: 0,
           }}
         >
           Professional<br />
@@ -130,38 +143,75 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
         {/* Subtitle */}
         <p
           style={{
-            fontSize:     isMobile ? "var(--text-base)" : "clamp(var(--text-base),1.5vw,var(--text-lg))",
-            color:        "rgba(255,255,255,0.65)",
+            fontSize:     isMobile ? "var(--text-base)" : "clamp(var(--text-base), 1.5vw, var(--text-lg))",
+            color:        "rgba(255,255,255,0.60)",
             lineHeight:   "var(--leading-relaxed)",
-            /* Mobile: centered block with auto margins */
-            maxWidth:     isDesktop ? "480px" : "min(520px, 100%)",
-            marginTop:    "var(--space-4)",
-            marginBottom: isMobile ? "var(--space-8)" : "var(--space-10)",
-            marginInline: isMobile ? "auto" : undefined,
+            maxWidth:     isDesktop ? "420px" : "min(480px, 100%)",
+            marginTop:    "var(--space-5)",
+            marginBottom: "var(--space-6)",
+            marginInline: isMobile || isTablet ? "auto" : undefined,
             fontWeight:   300,
           }}
         >
-          The definitive source for commercial kitchen infrastructure.
-          Over 2,400 products from 180+ industry-leading brands,
-          built for restaurants, hotels, and food service operations.
+          The definitive source for commercial kitchen equipment,
+          built for restaurants, hotels, and food service operations
+          across East Africa.
         </p>
 
-        {/* CTA buttons
-            Mobile:  full-width stacked, capped at 26rem, centered
-            Tablet+: row, auto width
-        */}
+        {/* ── Stat strip — value props front and center ── */}
         <div
+          aria-label="Key statistics"
           style={{
             display:       "flex",
-            flexDirection: isMobile ? "column" : "row",
-            gap:           "var(--space-3)",
+            flexDirection: "row",
+            gap:           isMobile ? "var(--space-5)" : "var(--space-8)",
+            marginBottom:  "var(--space-8)",
             flexWrap:      "wrap",
-            /* Mobile: cap and center the button group */
-            width:         isMobile ? "100%" : undefined,
-            maxWidth:      isMobile ? "26rem" : undefined,
-            alignSelf:     isMobile ? "center" : undefined,
+            justifyContent: isMobile || isTablet ? "center" : "flex-start",
           }}
         >
+          {STATS.map(({ value, label }) => (
+            <div key={label} style={{ display: "flex", flexDirection: "column", gap: "2px" }}>
+              <span
+                style={{
+                  fontFamily:    "var(--font-display)",
+                  fontWeight:    800,
+                  fontSize:      isMobile ? "var(--text-xl)" : "var(--text-2xl)",
+                  color:         "var(--color-white)",
+                  letterSpacing: "var(--tracking-tight)",
+                  lineHeight:    1,
+                }}
+              >
+                {value}
+              </span>
+              <span
+                style={{
+                  fontSize:  "var(--text-xs)",
+                  fontWeight: 500,
+                  color:     "rgba(255,255,255,0.40)",
+                  textTransform: "uppercase",
+                  letterSpacing: "var(--tracking-wider)",
+                }}
+              >
+                {label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* ── CTA buttons — clear primary / secondary hierarchy ── */}
+        <div
+          style={{
+            display:        "flex",
+            flexDirection:  isMobile ? "column" : "row",
+            gap:            "var(--space-3)",
+            flexWrap:       "wrap",
+            width:          isMobile || isTablet ? "100%" : undefined,
+            maxWidth:       isMobile || isTablet ? "26rem" : undefined,
+            alignSelf:      isMobile || isTablet ? "center" : undefined,
+          }}
+        >
+          {/* Primary — filled amber, dominant */}
           <Link
             href="/products"
             className="btn btn-primary btn-lg"
@@ -169,10 +219,14 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
           >
             Browse Catalog →
           </Link>
+          {/* Secondary — ghost, clearly subordinate */}
           <Link
             href="/search"
             className="btn btn-outline-light btn-lg"
-            style={{ textAlign: "center" }}
+            style={{
+              textAlign: "center",
+              opacity:   0.75,
+            }}
           >
             Search Equipment
           </Link>
@@ -180,7 +234,7 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
       </div>
 
       {/* ══════════════════════════════════════════════════════════════════
-          RIGHT / BOTTOM — Product showcase (DB-driven)
+          RIGHT / BOTTOM — Product showcase
       ══════════════════════════════════════════════════════════════════ */}
       <div
         aria-hidden={isDesktop ? true : undefined}
@@ -193,7 +247,7 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
           display:    "flex",
           alignItems: isDesktop ? "center" : "flex-start",
           position:   "relative",
-          zIndex:     "var(--z-raised)",
+          zIndex:     1,
         }}
       >
         <div style={{ width: "100%" }}>
@@ -209,6 +263,7 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
               textDecoration: "none",
               overflow:       "hidden",
               borderRadius:   "var(--radius-lg)",
+              border:         "1px solid rgba(232,160,32,0.12)",
             }}
           >
             {/* Image */}
@@ -280,6 +335,30 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
                 {hero.name}
               </p>
 
+              {/* Stock status — moved up, near the name */}
+              <p style={{
+                fontSize:   "var(--text-xs)",
+                fontWeight: 600,
+                color:      "rgba(120,220,140,0.90)",
+                display:    "flex",
+                alignItems: "center",
+                gap:        "5px",
+                marginTop:  "var(--space-1)",
+              }}>
+                <span
+                  style={{
+                    display:      "inline-block",
+                    width:        "6px",
+                    height:       "6px",
+                    borderRadius: "50%",
+                    background:   "rgba(120,220,140,0.90)",
+                    flexShrink:   0,
+                  }}
+                  aria-hidden="true"
+                />
+                In stock
+              </p>
+
               <p style={{
                 fontFamily:    "var(--font-display)", fontWeight: 800,
                 fontSize:      isMobile ? "var(--text-lg)" : "var(--text-2xl)",
@@ -291,30 +370,62 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
                 gap:           "var(--space-2)", flexWrap: "wrap",
               }}>
                 {hero.price !== null && formatPrice(hero.price, hero.currency)}
-                <span style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "rgba(255,255,255,0.45)" }}>
+                <span style={{ fontSize: "var(--text-sm)", fontWeight: 400, color: "rgba(255,255,255,0.40)" }}>
                   Starting price
                 </span>
               </p>
+
+              {/* Quote nudge — B2B appropriate */}
+              {!isMobile && (
+                <p style={{
+                  fontSize:      "var(--text-xs)",
+                  color:         "rgba(232,160,32,0.70)",
+                  fontWeight:    500,
+                  letterSpacing: "var(--tracking-wide)",
+                  marginTop:     "var(--space-1)",
+                  display:       "flex",
+                  alignItems:    "center",
+                  gap:           "5px",
+                }}>
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                  </svg>
+                  Quote within 24 hours
+                </p>
+              )}
             </div>
           </Link>
 
           {/* Mini product cards — tablet + desktop only */}
           {!isMobile && mini.length > 0 && (
-            <div style={{
-              display:             "grid",
-              gridTemplateColumns: "1fr 1fr",
-              gap:                 "var(--space-3)",
-              marginTop:           "var(--space-3)",
-            }}>
-              {mini.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  variant="compact"
-                  showStock={false}
-                />
-              ))}
-            </div>
+            <>
+              <style>{`
+                .hero-mini-cards .btn {
+                  border-radius: var(--radius-sm) !important;
+                  padding-top:    var(--space-2) !important;
+                  padding-bottom: var(--space-2) !important;
+                  font-size:      var(--text-xs) !important;
+                }
+              `}</style>
+              <div
+                className="hero-mini-cards"
+                style={{
+                  display:             "grid",
+                  gridTemplateColumns: "1fr 1fr",
+                  gap:                 "var(--space-3)",
+                  marginTop:           "var(--space-3)",
+                }}
+              >
+                {mini.map((product) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    variant="compact"
+                    showStock={false}
+                  />
+                ))}
+              </div>
+            </>
           )}
 
           {/* Mobile: "view all" nudge */}
@@ -339,7 +450,7 @@ export default function HeroClient({ hero, mini }: HeroClientProps) {
                 transition:     "color var(--transition-fast), border-color var(--transition-fast)",
               }}
             >
-              View all 2,400+ products →
+              View all 1,000+ products →
             </Link>
           )}
         </div>

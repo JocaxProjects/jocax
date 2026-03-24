@@ -21,6 +21,14 @@ const NAV_LINKS = [
   { href: "/contact",    label: "Contact"    },
 ];
 
+// ── Contact details (single source of truth) ──────────────────────────────
+const CONTACT = {
+  phone:    "+254 725 002 619",
+  phoneTel: "tel:+254725002619",
+  email:    "sale@jocaxsolutions.co.ke",
+  emailHref:"mailto:sale@jocaxsolutions.co.ke",
+};
+
 function isActive(pathname: string, href: string) {
   if (href === "/") return pathname === "/";
   return pathname.startsWith(href);
@@ -85,16 +93,6 @@ export default function Header() {
       <svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style={{ position: "absolute" }} aria-hidden="true">
         <defs>
           <filter id="logo-recolor" colorInterpolationFilters="sRGB">
-            {/*
-              feColorMatrix: each row maps [R, G, B, A, offset] → output channel.
-              Dark pixels (navy/black: low R,G,B) → white/light-gray.
-              Gold pixels (high R, high G, low B) → stay warm gold.
-              Row logic:
-                R_out = 0.8R + 0.8G + 0.8B + 0.18   → dark→white, gold stays bright
-                G_out = 0.7R + 0.7G + 0.4B + 0.18   → preserves gold's green warmth
-                B_out = 0.1R + 0.1G + 0.1B + 0.18   → kills blue channel (removes navy blue cast)
-                A_out = original alpha
-            */}
             <feColorMatrix
               type="matrix"
               values="0.8  0.8  0.8  0  0.18
@@ -112,12 +110,31 @@ export default function Header() {
       </a>
 
       {/* ════════════════════════════════════════════════════════════════
-          NAV BAR
+          NAV BAR  (contact strip lives inside as first child)
       ════════════════════════════════════════════════════════════════ */}
       <header
         role="banner"
         className={`jx-header${scrolled || menuOpen ? " jx-header--scrolled" : ""}`}
       >
+        {/* ── Contact strip — desktop only, top of fixed header ── */}
+        <div className="jx-contact-strip" aria-label="Contact information">
+          <div className="container jx-contact-strip__inner">
+            <a href={CONTACT.phoneTel} className="jx-contact-strip__item" aria-label={`Call us: ${CONTACT.phone}`}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.59.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.59a1 1 0 0 1-.25 1.01l-2.2 2.19Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {CONTACT.phone}
+            </a>
+            <a href={CONTACT.emailHref} className="jx-contact-strip__item" aria-label={`Email us: ${CONTACT.email}`}>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.8"/>
+                <path d="M2 8l10 6 10-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+              </svg>
+              {CONTACT.email}
+            </a>
+          </div>
+        </div>
+
         <div className="container jx-header__inner">
 
           {/* ── Logo ─────────────────────────────────────────────────── */}
@@ -303,6 +320,38 @@ export default function Header() {
             })}
           </ul>
 
+          {/* ── Mobile contact links ────────────────────────────────── */}
+          <div className="jx-drawer__contact" aria-label="Contact information">
+            <p className="eyebrow-light jx-drawer__contact-eyebrow">Get in touch</p>
+            <a
+              href={CONTACT.phoneTel}
+              tabIndex={menuOpen ? 0 : -1}
+              className="jx-drawer__contact-link"
+              aria-label={`Call us: ${CONTACT.phone}`}
+            >
+              <span className="jx-drawer__contact-icon" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.59.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.59a1 1 0 0 1-.25 1.01l-2.2 2.19Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+              {CONTACT.phone}
+            </a>
+            <a
+              href={CONTACT.emailHref}
+              tabIndex={menuOpen ? 0 : -1}
+              className="jx-drawer__contact-link"
+              aria-label={`Email us: ${CONTACT.email}`}
+            >
+              <span className="jx-drawer__contact-icon" aria-hidden="true">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
+                  <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.8"/>
+                  <path d="M2 8l10 6 10-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                </svg>
+              </span>
+              {CONTACT.email}
+            </a>
+          </div>
+
           <div className="jx-drawer__cta">
             <p className="eyebrow-light jx-drawer__cta-eyebrow">
               Ready to equip your kitchen?
@@ -359,19 +408,53 @@ export default function Header() {
           STYLES
       ════════════════════════════════════════════════════════════════ */}
       <style>{`
+        /* ── CONTACT STRIP (desktop only, child of fixed header) ── */
+        .jx-contact-strip {
+          display:       none;
+          border-bottom: 1px solid rgba(232, 160, 32, 0.10);
+          flex-shrink:   0;
+        }
+        .jx-contact-strip__inner {
+          display:         flex;
+          align-items:     center;
+          justify-content: flex-end;
+          gap:             var(--space-6);
+          height:          34px;
+        }
+        .jx-contact-strip__item {
+          display:         inline-flex;
+          align-items:     center;
+          gap:             6px;
+          font-size:       var(--text-xs);
+          font-weight:     500;
+          color:           rgba(255, 255, 255, 0.45);
+          text-decoration: none;
+          letter-spacing:  var(--tracking-wide);
+          transition:      color var(--transition-fast);
+          white-space:     nowrap;
+        }
+        .jx-contact-strip__item:hover        { color: var(--color-amber); }
+        .jx-contact-strip__item:focus-visible {
+          outline:        2px solid var(--color-amber);
+          outline-offset: 3px;
+          border-radius:  var(--radius-sm);
+        }
+        .jx-contact-strip__item svg { flex-shrink: 0; opacity: 0.7; }
+        .jx-contact-strip__item:hover svg { opacity: 1; }
+
         .jx-header {
           position:             fixed;
           inset:                0 0 auto 0;
-          height:               var(--nav-height-mobile);
           z-index:              var(--z-sticky);
           background:           rgba(13, 13, 13, 0.82);
           backdrop-filter:      blur(16px);
           -webkit-backdrop-filter: blur(16px);
           border-bottom:        1px solid rgba(232, 160, 32, 0.08);
+          display:              flex;
+          flex-direction:       column;
           transition:
             background      var(--transition-base),
-            border-color    var(--transition-base),
-            height          var(--transition-base);
+            border-color    var(--transition-base);
           will-change:          background, border-color;
         }
         .jx-header--scrolled {
@@ -381,7 +464,7 @@ export default function Header() {
         }
 
         .jx-header__inner {
-          height:          100%;
+          height:          var(--nav-height-mobile);
           display:         flex;
           align-items:     center;
           justify-content: space-between;
@@ -409,15 +492,8 @@ export default function Header() {
           object-fit: contain;
           display:    block;
           background: transparent !important;
-          /*
-           * ✅ LOGO RECOLOR: SVG feColorMatrix converts dark navy/black pixels
-           * to white/light-gray while leaving amber/gold largely intact.
-           * Gold survives because it has high R+G values which the matrix
-           * maps to warm output; dark pixels (low R,G,B) map to near-white.
-           */
           filter: url(#logo-recolor);
         }
-        /* Next.js Image wrapper span — force transparent */
         .jx-logo span,
         .jx-logo > span {
           background: transparent !important;
@@ -715,8 +791,56 @@ export default function Header() {
           color:     rgba(232, 160, 32, 0.6);
         }
 
+        /* ── DRAWER CONTACT ── */
+        .jx-drawer__contact {
+          margin-top:    var(--space-6);
+          padding:       var(--space-4) var(--space-5);
+          border:        1px solid rgba(255, 255, 255, 0.08);
+          border-radius: var(--radius-lg);
+          display:       flex;
+          flex-direction:column;
+          gap:           var(--space-3);
+        }
+        .jx-drawer__contact-eyebrow { margin-bottom: var(--space-1); opacity: 0.55; }
+        .jx-drawer__contact-link {
+          display:         flex;
+          align-items:     center;
+          gap:             var(--space-3);
+          font-size:       var(--text-base);
+          font-weight:     500;
+          color:           rgba(255, 255, 255, 0.75);
+          text-decoration: none;
+          min-height:      44px;
+          border-radius:   var(--radius-md);
+          padding:         0 var(--space-1);
+          transition:      color var(--transition-fast), background var(--transition-fast);
+        }
+        .jx-drawer__contact-link:hover {
+          color:      var(--color-amber);
+          background: var(--color-amber-muted);
+        }
+        .jx-drawer__contact-link:focus-visible {
+          outline:        3px solid var(--color-amber);
+          outline-offset: 2px;
+        }
+        .jx-drawer__contact-icon {
+          display:         flex;
+          align-items:     center;
+          justify-content: center;
+          width:           32px;
+          height:          32px;
+          border-radius:   var(--radius-md);
+          background:      rgba(232, 160, 32, 0.10);
+          flex-shrink:     0;
+          color:           var(--color-amber);
+          transition:      background var(--transition-fast);
+        }
+        .jx-drawer__contact-link:hover .jx-drawer__contact-icon {
+          background: rgba(232, 160, 32, 0.20);
+        }
+
         .jx-drawer__cta {
-          margin-top:    var(--space-8);
+          margin-top:    var(--space-6);
           padding:       var(--space-6);
           background:    var(--color-amber-muted);
           border:        1px solid rgba(232, 160, 32, 0.22);
@@ -769,11 +893,13 @@ export default function Header() {
           .jx-drawer__link { font-size: clamp(1.15rem, 3.5vw, 1.4rem); }
         }
         @media (min-width: 768px) {
+          .jx-contact-strip   { display: block !important; }
           .jx-nav-desktop     { display: flex !important; }
           .jx-mobile-controls { display: none  !important; }
           .jx-drawer          { display: none  !important; }
           .jx-search-mobile   { display: none  !important; }
-          .jx-header          { height: var(--nav-height); }
+          /* header height = strip (34px) + nav row; let flexbox determine total */
+          .jx-header__inner   { height: var(--nav-height); }
         }
         @media (min-width: 1024px) {
           .jx-search-desktop { display: flex !important; }
@@ -803,6 +929,7 @@ export default function Header() {
           .jx-backdrop { animation: none !important; }
         }
         @media (forced-colors: active) {
+          .jx-contact-strip    { border-bottom: 1px solid ButtonText; }
           .jx-header           { border-bottom: 1px solid ButtonText; }
           .jx-nav-link--active { color: Highlight; border-bottom-color: Highlight; }
           .jx-icon-btn,
@@ -811,7 +938,7 @@ export default function Header() {
           .jx-backdrop         { background: rgba(0,0,0,0.7); forced-color-adjust: none; }
         }
         @media print {
-          .jx-header, .jx-drawer, .jx-backdrop { display: none !important; }
+          .jx-contact-strip, .jx-header, .jx-drawer, .jx-backdrop { display: none !important; }
         }
       `}</style>
     </>

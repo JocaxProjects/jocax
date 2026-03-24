@@ -40,6 +40,14 @@ async function getHeroProducts(): Promise<{
   }
 }
 
+// ─── Fallback stats (mirrors HeroClient) ─────────────────────────────────────
+
+const FALLBACK_STATS = [
+  { value: "1,000+", label: "Products" },
+  { value: "50+",    label: "Brands"   },
+  { value: "1,000+", label: "Operations served" },
+];
+
 // ─── Server Component ─────────────────────────────────────────────────────────
 
 export default async function HeroSection() {
@@ -49,12 +57,7 @@ export default async function HeroSection() {
     return (
       <>
         <style>{`
-          /* ── Hero fallback button group ─────────────────────────────
-             Mobile:  full-width stacked buttons, capped container
-             SM+:     equal-width side by side
-          ── */
           .hero-fallback-actions {
-            margin-top:      var(--space-8);
             display:         flex;
             flex-wrap:       wrap;
             gap:             var(--space-3);
@@ -70,11 +73,40 @@ export default async function HeroSection() {
             text-align:      center;
             box-sizing:      border-box;
           }
+          .hero-fallback-actions > *:last-child {
+            opacity: 0.75;
+          }
           @media (min-width: 480px) {
             .hero-fallback-actions > * {
               flex:      1 1 0;
               max-width: 13rem;
             }
+          }
+          .hero-fallback-stats {
+            display:         flex;
+            flex-wrap:       wrap;
+            gap:             2rem;
+            justify-content: center;
+            margin-top:      var(--space-8);
+            margin-bottom:   0;
+          }
+          .hero-fallback-stat-value {
+            font-family:    var(--font-display);
+            font-weight:    800;
+            font-size:      var(--text-2xl);
+            color:          var(--color-white);
+            letter-spacing: var(--tracking-tight);
+            line-height:    1;
+            display:        block;
+          }
+          .hero-fallback-stat-label {
+            font-size:      var(--text-xs);
+            font-weight:    500;
+            color:          rgba(255,255,255,0.40);
+            text-transform: uppercase;
+            letter-spacing: var(--tracking-wider);
+            display:        block;
+            margin-top:     3px;
           }
         `}</style>
 
@@ -91,25 +123,39 @@ export default async function HeroSection() {
             overflow:       "hidden",
           }}
         >
-          {/* Ambient diagonal — matches the rest of the site hero pattern */}
-          <div aria-hidden="true" style={{
-            position:   "absolute", top: 0, right: "-10%",
-            width:      "45%",      height: "100%",
-            background: "linear-gradient(135deg, transparent 45%, rgba(232,160,32,0.1) 45%)",
-            pointerEvents: "none",
-          }}/>
 
-          <div className="container" style={{ textAlign: "center", position: "relative" }}>
+
+          <div className="container" style={{ textAlign: "center", position: "relative", zIndex: 1 }}>
+
+            {/* Eyebrow */}
             <p style={{
-              fontFamily:     "var(--font-display)",
-              fontSize:       "var(--text-xs)",
-              fontWeight:     700,
-              letterSpacing:  "var(--tracking-widest)",
-              textTransform:  "uppercase",
-              color:          "var(--color-amber)",
-              marginBottom:   "var(--space-4)",
+              fontFamily:    "var(--font-display)",
+              fontSize:      "var(--text-xs)",
+              fontWeight:    700,
+              letterSpacing: "var(--tracking-widest)",
+              textTransform: "uppercase",
+              color:         "var(--color-amber)",
+              marginBottom:  "var(--space-4)",
+              display:       "flex",
+              alignItems:    "center",
+              justifyContent:"center",
+              gap:           "var(--space-2)",
             }}>
+              <span style={{
+                display:    "inline-block",
+                width:      "24px",
+                height:     "2px",
+                background: "var(--color-amber)",
+                borderRadius: "2px",
+              }} aria-hidden="true" />
               East Africa&apos;s Kitchen Specialists
+              <span style={{
+                display:    "inline-block",
+                width:      "24px",
+                height:     "2px",
+                background: "var(--color-amber)",
+                borderRadius: "2px",
+              }} aria-hidden="true" />
             </p>
 
             <h1 style={{ color: "var(--color-white)", marginBottom: 0 }}>
@@ -118,18 +164,30 @@ export default async function HeroSection() {
             </h1>
 
             <p style={{
-              color:       "rgba(255,255,255,0.55)",
-              marginTop:   "var(--space-4)",
-              fontSize:    "clamp(var(--text-base), 2vw, var(--text-lg))",
-              fontWeight:  300,
-              lineHeight:  "var(--leading-relaxed)",
-              maxWidth:    "min(520px, 100%)",
-              marginInline:"auto",
+              color:        "rgba(255,255,255,0.55)",
+              marginTop:    "var(--space-4)",
+              fontSize:     "clamp(var(--text-base), 2vw, var(--text-lg))",
+              fontWeight:   300,
+              lineHeight:   "var(--leading-relaxed)",
+              maxWidth:     "min(480px, 100%)",
+              marginInline: "auto",
+              marginBottom: 0,
             }}>
-              Trusted by 3,800+ operations across East Africa — ovens, refrigeration,
-              prep equipment, and more.
+              The definitive source for commercial kitchen equipment,
+              built for restaurants, hotels, and food service operations.
             </p>
 
+            {/* Stat strip */}
+            <div className="hero-fallback-stats" aria-label="Key statistics">
+              {FALLBACK_STATS.map(({ value, label }) => (
+                <div key={label}>
+                  <span className="hero-fallback-stat-value">{value}</span>
+                  <span className="hero-fallback-stat-label">{label}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* CTAs — primary dominant, secondary ghost + reduced opacity */}
             <div className="hero-fallback-actions">
               <Link href="/products" className="btn btn-primary btn-lg">
                 Browse Catalog →
