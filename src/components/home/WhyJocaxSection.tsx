@@ -2,9 +2,9 @@
 // Two-column layout: left brand copy, right 2×2 feature card grid.
 //
 // RESPONSIVE strategy:
-//   < 640px  (mobile)  — single column; feature cards in 1-col stack
-//   640–1023px (tablet) — single column; feature cards in 2-col grid
-//   ≥ 1024px (desktop) — original two-column 1fr 1fr side by side
+//   < 640px  (mobile)  — single column; feature cards stacked
+//   640–1023px (tablet) — single column; feature cards 2-col grid; copy centered
+//   ≥ 1024px (desktop) — two-column 3fr 2fr (copy wider than cards)
 
 "use client";
 
@@ -33,6 +33,7 @@ function useBreakpoint() {
 export default function WhyJocaxSection() {
   const bp        = useBreakpoint();
   const isMobile  = bp === "mobile";
+  const isTablet  = bp === "tablet";
   const isDesktop = bp === "desktop";
 
   return (
@@ -41,45 +42,113 @@ export default function WhyJocaxSection() {
       aria-labelledby="why-heading"
       style={{ background: "var(--color-ink)" }}
     >
+      <style>{`
+        /* ── Feature card ──────────────────────────────────────────────── */
+        .why-card {
+          border-radius:  var(--radius-lg);
+          border:         1px solid rgba(255,255,255,0.07);
+          background:     rgba(255,255,255,0.03);
+          transition:     border-color 300ms ease,
+                          box-shadow   300ms ease,
+                          transform    300ms ease;
+        }
+        .why-card:hover {
+          border-color: rgba(232,160,32,0.30);
+          box-shadow:   0 0 0 1px rgba(232,160,32,0.15),
+                        0 16px 40px rgba(0,0,0,0.40);
+          transform:    translateY(-2px);
+        }
+
+        /* ── Icon box ──────────────────────────────────────────────────── */
+        .why-icon-box {
+          width:           40px;
+          height:          40px;
+          border-radius:   var(--radius-md);
+          background:      rgba(232,160,32,0.10);
+          border:          1px solid rgba(232,160,32,0.15);
+          display:         flex;
+          align-items:     center;
+          justify-content: center;
+          font-size:       1.2rem;
+          flex-shrink:     0;
+          transition:      background 300ms ease, border-color 300ms ease;
+        }
+        .why-card:hover .why-icon-box {
+          background:   rgba(232,160,32,0.16);
+          border-color: rgba(232,160,32,0.30);
+        }
+
+        /* ── Eyebrow ───────────────────────────────────────────────────── */
+        .why-eyebrow {
+          display:        flex;
+          align-items:    center;
+          gap:            var(--space-2);
+          font-family:    var(--font-display);
+          font-size:      var(--text-xs);
+          font-weight:    700;
+          letter-spacing: var(--tracking-widest);
+          text-transform: uppercase;
+          color:          var(--color-amber);
+          margin-bottom:  var(--space-3);
+        }
+        .why-eyebrow-dash {
+          display:       inline-block;
+          width:         20px;
+          height:        2px;
+          background:    var(--color-amber);
+          border-radius: 2px;
+          flex-shrink:   0;
+        }
+
+        /* ── Divider between stats ─────────────────────────────────────── */
+        .why-stat-divider {
+          width:        1px;
+          height:       32px;
+          background:   rgba(255,255,255,0.10);
+          flex-shrink:  0;
+        }
+      `}</style>
+
       <div className="container">
         <div
           style={{
             display:             "grid",
-            // Mobile/tablet: stack copy above cards. Desktop: side by side.
-            gridTemplateColumns: isDesktop ? "1fr 1fr" : "1fr",
+            gridTemplateColumns: isDesktop ? "3fr 2fr" : "1fr",
             gap:                 isDesktop
               ? "var(--space-20)"
-              : isMobile
-              ? "var(--space-10)"
-              : "var(--space-14)",
+              : isTablet
+              ? "var(--space-14)"
+              : "var(--space-10)",
             alignItems: "center",
           }}
         >
 
-          {/* ── Left / Top — brand copy ─────────────────────────────────── */}
+          {/* ══════════════════════════════════════════════════════════════
+              LEFT / TOP — brand copy
+          ══════════════════════════════════════════════════════════════ */}
           <div
             style={{
               display:       "flex",
               flexDirection: "column",
-              // On mobile/tablet center-align the copy block for a cleaner
-              // single-column read; desktop stays left-aligned.
-              alignItems: isMobile ? "center" : "flex-start",
-              textAlign:  isMobile ? "center" : "left",
+              alignItems:    isDesktop ? "flex-start" : "center",
+              textAlign:     isDesktop ? "left"       : "center",
             }}
           >
-            {/* Eyebrow — use eyebrow-light since we're on a dark (ink) bg */}
-            <p className="eyebrow-light" style={{ marginBottom: "var(--space-3)" }}>
+            {/* Eyebrow — consistent amber dash pattern */}
+            <p className="why-eyebrow">
+              <span className="why-eyebrow-dash" aria-hidden="true" />
               Why Jocax Solutions
             </p>
 
-            {/* H2 — display heading, uppercase is correct at this size */}
+            {/* H2 */}
             <h2
               id="why-heading"
               style={{
-                color:    "var(--color-white)",
-                fontSize: isMobile
-                  ? "clamp(2rem, 9vw, 2.75rem)"   /* 32–44px */
+                color:        "var(--color-white)",
+                fontSize:     isMobile
+                  ? "clamp(2rem, 9vw, 2.75rem)"
                   : "clamp(var(--text-3xl), 4vw, var(--text-5xl))",
+                marginBottom: 0,
               }}
             >
               Built for<br />
@@ -87,17 +156,17 @@ export default function WhyJocaxSection() {
               <span style={{ color: "var(--color-amber)" }}>Professionals</span>
             </h2>
 
-            {/* Body copy — raised from --color-text-faint to 0.65 white
-                --color-text-faint (#9ca3af) on ink (#0d0d0d) passes contrast
-                but feels washed out; rgba(255,255,255,0.65) is warmer. */}
+            {/* Body copy */}
             <p
               style={{
-                color:      "rgba(255,255,255,0.65)",
-                marginTop:  "var(--space-5)",
-                fontWeight: 300,
-                fontSize:   "var(--text-base)",   /* explicit 16px */
-                maxWidth:   isMobile ? "none" : "420px",
-                lineHeight: "var(--leading-relaxed)",
+                color:        "rgba(255,255,255,0.60)",
+                marginTop:    "var(--space-5)",
+                marginBottom: "var(--space-8)",
+                fontWeight:   300,
+                fontSize:     "var(--text-base)",
+                maxWidth:     isDesktop ? "420px" : "min(520px, 100%)",
+                marginInline: isDesktop ? undefined : "auto",
+                lineHeight:   "var(--leading-relaxed)",
               }}
             >
               We supply restaurants, hotels, caterers, and institutional kitchens
@@ -106,91 +175,65 @@ export default function WhyJocaxSection() {
               by our procurement team.
             </p>
 
-            <div style={{ marginTop: "var(--space-8)" }}>
-              <Link href="/products" className="btn btn-primary btn-lg">
-                Start Browsing →
-              </Link>
-            </div>
+            {/* CTA */}
+            <Link
+              href="/products"
+              className="btn btn-primary btn-lg"
+              style={{ alignSelf: isDesktop ? "flex-start" : "center" }}
+            >
+              Start Browsing →
+            </Link>
           </div>
 
-          {/* ── Right / Bottom — feature cards ──────────────────────────── */}
+          {/* ══════════════════════════════════════════════════════════════
+              RIGHT / BOTTOM — feature cards
+          ══════════════════════════════════════════════════════════════ */}
           <div
             role="list"
             style={{
               display:             "grid",
-              // Mobile: 1 column so cards have room to breathe.
-              // Tablet + desktop: 2 columns.
               gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-              gap:                 isMobile ? "var(--space-4)" : "var(--space-5)",
+              gap:                 isMobile ? "var(--space-4)" : "var(--space-4)",
             }}
           >
             {WHY_FEATURES.map((f) => (
               <div
                 key={f.title}
                 role="listitem"
-                className="surface-dark"
+                className="why-card"
                 style={{
-                  borderRadius: "var(--radius-lg)",
-                  padding:      isMobile ? "var(--space-5)" : "var(--space-6)",
-                  // On mobile, lay the card out horizontally (icon left, text right)
-                  // so a single-column stack doesn't feel monotonous.
-                  display:       isMobile ? "flex"   : "block",
-                  flexDirection: isMobile ? "row"    : undefined,
-                  gap:           isMobile ? "var(--space-4)" : undefined,
-                  alignItems:    isMobile ? "flex-start" : undefined,
+                  padding:       isMobile ? "var(--space-5)" : "var(--space-5)",
+                  display:       "flex",
+                  flexDirection: isMobile ? "row" : "column",
+                  gap:           isMobile ? "var(--space-4)" : "var(--space-3)",
+                  alignItems:    isMobile ? "flex-start" : "flex-start",
                 }}
               >
-                {/* Icon */}
-                <div
-                  aria-hidden="true"
-                  style={{
-                    fontSize:    "1.5rem",
-                    lineHeight:  1,
-                    marginBottom: isMobile ? 0 : "var(--space-3)",
-                    flexShrink:  0,
-                    // On desktop/tablet give the icon a subtle amber tinted circle
-                    background:  isMobile ? "none" : "var(--color-amber-muted)",
-                    borderRadius: isMobile ? 0 : "var(--radius-md)",
-                    width:       isMobile ? "auto" : "2.5rem",
-                    height:      isMobile ? "auto" : "2.5rem",
-                    display:     "flex",
-                    alignItems:  "center",
-                    justifyContent: "center",
-                  }}
-                >
+                {/* Icon box — consistent on all breakpoints */}
+                <div className="why-icon-box" aria-hidden="true">
                   {f.icon}
                 </div>
 
-                {/* Text block */}
+                {/* Text */}
                 <div style={{ flex: 1 }}>
-                  {/* Feature title
-                      TYPOGRAPHY FIX: was uppercase at 16px (--text-base).
-                      At this size with Barlow Condensed, sentence case reads
-                      ~15% faster. Removed text-transform + tracking-wide.
-                      Font weight bumped to 800 to compensate for lost emphasis. */}
                   <p
                     style={{
-                      fontFamily:  "var(--font-display)",
-                      fontWeight:  800,
-                      fontSize:    "var(--text-base)",   /* 16px */
-                      color:       "var(--color-white)",
-                      // No text-transform, no tracking-wide — sentence case at 16px
+                      fontFamily:    "var(--font-display)",
+                      fontWeight:    800,
+                      fontSize:      "var(--text-base)",
+                      color:         "var(--color-white)",
                       letterSpacing: "var(--tracking-normal)",
                       textTransform: "none",
-                      marginBottom: "var(--space-2)",
-                      maxWidth:    "none",
+                      marginBottom:  "var(--space-2)",
+                      maxWidth:      "none",
                     }}
                   >
                     {f.title}
                   </p>
-
-                  {/* Description — raised from --text-sm (14px) to --text-base (16px)
-                      on mobile for comfortable single-column reading; 14px on desktop
-                      where the card is compact and both columns are visible. */}
                   <p
                     style={{
-                      fontSize:   isMobile ? "var(--text-base)" : "var(--text-sm)",
-                      color:      "rgba(255,255,255,0.50)",
+                      fontSize:   "var(--text-sm)",
+                      color:      "rgba(255,255,255,0.48)",
                       lineHeight: "var(--leading-relaxed)",
                       maxWidth:   "none",
                     }}

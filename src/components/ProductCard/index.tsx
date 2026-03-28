@@ -25,7 +25,6 @@ export interface ProductCardProps {
   variant?:         "grid" | "list" | "compact";
   showStock?:       boolean;
   priority?:        boolean;
-  // Added to fix TS2353 errors in ProductGrid, ProductsClient, and RelatedProducts
   showDescription?: boolean;
   showSpecs?:       boolean;
   className?:       string;
@@ -76,25 +75,32 @@ function StockBadge({ qty, inline = false }: { qty: number; inline?: boolean }) 
   const inStock = qty > 0;
   const low     = inStock && qty <= 5;
 
-  const color  = inStock ? (low ? "rgb(180,83,9)"            : "rgb(21,128,61)")            : "rgb(185,28,28)";
-  const bg     = inStock ? (low ? "rgba(245,158,11,0.10)"    : "rgba(22,163,74,0.10)")      : "rgba(220,38,38,0.10)";
-  const dot    = inStock ? (low ? "rgb(245,158,11)"          : "rgb(22,163,74)")             : "rgb(220,38,38)";
-  const border = inStock ? (low ? "rgba(245,158,11,0.25)"    : "rgba(22,163,74,0.25)")       : "rgba(220,38,38,0.25)";
-  const label  = inStock ? (low ? `Only ${qty} left`         : "In Stock")                   : "Out of Stock";
+  // Lifted green from rgb(21,128,61) → rgb(74,222,128) for dark-bg readability
+  const color  = inStock ? (low ? "rgb(180,83,9)"         : "rgb(74,222,128)")       : "rgb(248,113,113)";
+  const bg     = inStock ? (low ? "rgba(245,158,11,0.10)" : "rgba(22,163,74,0.10)")  : "rgba(220,38,38,0.10)";
+  const dot    = inStock ? (low ? "rgb(245,158,11)"       : "rgb(74,222,128)")        : "rgb(220,38,38)";
+  const border = inStock ? (low ? "rgba(245,158,11,0.25)" : "rgba(22,163,74,0.25)")   : "rgba(220,38,38,0.25)";
+  const label  = inStock ? (low ? `Only ${qty} left`      : "In Stock")               : "Out of Stock";
 
   return (
     <span style={{
-      display: inline ? "inline-flex" : "flex",
-      alignItems: "center", gap: "0.3rem",
-      fontSize: "0.625rem", fontWeight: 700,
-      fontFamily: "var(--font-body)", letterSpacing: "0.06em",
+      display:       inline ? "inline-flex" : "flex",
+      alignItems:    "center",
+      gap:           "0.3rem",
+      fontSize:      "0.625rem",
+      fontWeight:    700,
+      fontFamily:    "var(--font-body)",
+      letterSpacing: "0.06em",
       textTransform: "uppercase",
-      padding: "0.2rem 0.55rem",
-      borderRadius: "var(--radius-full)",
-      background: bg, color, border: `1px solid ${border}`,
-      whiteSpace: "nowrap", flexShrink: 0,
+      padding:       "0.2rem 0.55rem",
+      borderRadius:  "var(--radius-sm)",  /* rectangular — not pill */
+      background:    bg,
+      color,
+      border:        `1px solid ${border}`,
+      whiteSpace:    "nowrap",
+      flexShrink:    0,
     }}>
-      <span style={{ width: "5px", height: "5px", borderRadius: "var(--radius-full)", background: dot, flexShrink: 0 }} />
+      <span style={{ width: "5px", height: "5px", borderRadius: "50%", background: dot, flexShrink: 0 }} />
       {label}
     </span>
   );
@@ -103,14 +109,19 @@ function StockBadge({ qty, inline = false }: { qty: number; inline?: boolean }) 
 function FeaturedBadge() {
   return (
     <span style={{
-      display: "inline-flex", alignItems: "center", gap: "0.25rem",
-      fontSize: "0.5625rem", fontWeight: 800,
-      fontFamily: "var(--font-display)", letterSpacing: "0.1em",
+      display:       "inline-flex",
+      alignItems:    "center",
+      gap:           "0.25rem",
+      fontSize:      "0.5625rem",
+      fontWeight:    800,
+      fontFamily:    "var(--font-display)",
+      letterSpacing: "0.1em",
       textTransform: "uppercase",
-      padding: "0.2rem 0.55rem",
-      borderRadius: "var(--radius-sm)",
-      background: "var(--color-amber)", color: "var(--color-ink)",
-      flexShrink: 0,
+      padding:       "0.2rem 0.55rem",
+      borderRadius:  "var(--radius-sm)",
+      background:    "var(--color-amber)",
+      color:         "var(--color-ink)",
+      flexShrink:    0,
     }}>
       ★ Featured
     </span>
@@ -137,28 +148,30 @@ export function CompactCard({ product, showStock = true, priority }: ProductCard
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        display: "flex", alignItems: "stretch", gap: 0,
-        textDecoration: "none", borderRadius: "var(--radius-lg)",
-        overflow: "hidden", background: "var(--color-surface)",
-        border: `1.5px solid ${hovered ? "rgba(232,160,32,0.4)" : "var(--color-border)"}`,
-        transition: "border-color var(--transition-fast), box-shadow var(--transition-fast)",
-        boxShadow: hovered
+        display:        "flex",
+        alignItems:     "stretch",
+        gap:            0,
+        textDecoration: "none",
+        borderRadius:   "var(--radius-lg)",
+        overflow:       "hidden",
+        background:     "var(--color-surface)",
+        border:         `1.5px solid ${hovered ? "rgba(232,160,32,0.4)" : "var(--color-border)"}`,
+        transition:     "border-color var(--transition-fast), box-shadow var(--transition-fast)",
+        boxShadow:      hovered
           ? "0 4px 20px rgba(0,0,0,0.25), 0 0 0 1px rgba(232,160,32,0.1)"
           : "0 1px 4px rgba(0,0,0,0.15)",
       }}
     >
-      <div style={{
-        position: "relative", width: "5rem", flexShrink: 0,
-        background: "var(--color-catalog-bg)", overflow: "hidden",
-      }}>
+      <div style={{ position: "relative", width: "5rem", flexShrink: 0, background: "var(--color-catalog-bg)", overflow: "hidden" }}>
         {image ? (
           <Image
             src={image.imageUrl} alt={image.altText ?? product.name}
             fill sizes="80px" priority={priority}
             style={{
-              objectFit: "contain", padding: "0.5rem",
+              objectFit:  "contain",
+              padding:    "0.5rem",
               transition: "transform var(--transition-base)",
-              transform: hovered ? "scale(1.06)" : "scale(1)",
+              transform:  hovered ? "scale(1.06)" : "scale(1)",
             }}
           />
         ) : (
@@ -187,20 +200,29 @@ export function CompactCard({ product, showStock = true, priority }: ProductCard
           <button
             type="button"
             onClick={(e) => openWhatsApp(e, product.name)}
-            aria-label={`Request quote for ${product.name} via WhatsApp`}
+            aria-label={`Request a quote for ${product.name} via WhatsApp`}
             style={{
-              display: "inline-flex", alignItems: "center", gap: "0.25rem",
-              fontSize: "0.5625rem", fontWeight: 700,
-              fontFamily: "var(--font-display)", letterSpacing: "0.08em",
-              textTransform: "uppercase", padding: "0.2rem 0.5rem",
-              borderRadius: "var(--radius-full)",
-              background: "rgba(37,211,102,0.10)", border: "1px solid rgba(37,211,102,0.25)",
-              color: "rgb(21,128,61)", whiteSpace: "nowrap", flexShrink: 0,
-              transition: "background var(--transition-fast)", cursor: "pointer",
+              display:        "inline-flex",
+              alignItems:     "center",
+              gap:            "0.25rem",
+              fontSize:       "0.5625rem",
+              fontWeight:     700,
+              fontFamily:     "var(--font-display)",
+              letterSpacing:  "0.08em",
+              textTransform:  "uppercase",
+              padding:        "0.2rem 0.5rem",
+              borderRadius:   "var(--radius-sm)",
+              background:     "rgba(37,211,102,0.08)",
+              border:         "1px solid rgba(37,211,102,0.22)",
+              color:          "rgb(74,222,128)",
+              whiteSpace:     "nowrap",
+              flexShrink:     0,
+              transition:     "background var(--transition-fast)",
+              cursor:         "pointer",
             }}
           >
             <WaIcon size="0.6875rem" />
-            Quote
+            Request a Quote
           </button>
         </div>
       </div>
@@ -220,28 +242,29 @@ export function ListCard({ product, showStock = true, priority }: ProductCardPro
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
-        display: "flex", alignItems: "stretch", textDecoration: "none",
-        borderRadius: "var(--radius-xl)", overflow: "hidden",
-        background: "var(--color-surface)",
-        border: `1.5px solid ${hovered ? "rgba(232,160,32,0.45)" : "var(--color-border)"}`,
-        transition: "border-color var(--transition-fast), box-shadow var(--transition-fast)",
-        boxShadow: hovered
+        display:        "flex",
+        alignItems:     "stretch",
+        textDecoration: "none",
+        borderRadius:   "var(--radius-xl)",
+        overflow:       "hidden",
+        background:     "var(--color-surface)",
+        border:         `1.5px solid ${hovered ? "rgba(232,160,32,0.45)" : "var(--color-border)"}`,
+        transition:     "border-color var(--transition-fast), box-shadow var(--transition-fast)",
+        boxShadow:      hovered
           ? "0 6px 24px rgba(0,0,0,0.25), 0 0 0 1px rgba(232,160,32,0.08)"
           : "0 1px 4px rgba(0,0,0,0.12)",
       }}
     >
-      <div style={{
-        position: "relative", width: "clamp(7rem, 15vw, 11rem)", flexShrink: 0,
-        background: "var(--color-catalog-bg)", overflow: "hidden",
-      }}>
+      <div style={{ position: "relative", width: "clamp(7rem, 15vw, 11rem)", flexShrink: 0, background: "var(--color-catalog-bg)", overflow: "hidden" }}>
         {image ? (
           <Image
             src={image.imageUrl} alt={image.altText ?? product.name}
             fill sizes="(max-width: 768px) 112px, 176px" priority={priority}
             style={{
-              objectFit: "contain", padding: "1rem",
+              objectFit:  "contain",
+              padding:    "1rem",
               transition: "transform 0.4s ease",
-              transform: hovered ? "scale(1.05)" : "scale(1)",
+              transform:  hovered ? "scale(1.05)" : "scale(1)",
             }}
           />
         ) : (
@@ -302,26 +325,37 @@ export function ListCard({ product, showStock = true, priority }: ProductCardPro
         <button
           type="button"
           onClick={(e) => openWhatsApp(e, product.name)}
-          aria-label={`Request quote for ${product.name} via WhatsApp`}
+          aria-label={`Request a quote for ${product.name} via WhatsApp`}
           style={{
             display: "flex", alignItems: "center", justifyContent: "center", gap: "0.375rem",
             width: "100%", padding: "0.625rem 0.75rem",
-            background: hovered ? "rgb(37,211,102)" : "rgba(37,211,102,0.10)",
-            border: "1.5px solid rgba(37,211,102,0.3)",
-            borderRadius: "var(--radius-md)",
-            color: hovered ? "var(--color-ink)" : "rgb(21,128,61)",
+            background: "rgba(37,211,102,0.08)",
+            border: "1.5px solid rgba(37,211,102,0.25)",
+            borderRadius: "var(--radius-sm)",
+            color: "rgb(74,222,128)",
             fontFamily: "var(--font-display)", fontWeight: 700,
             fontSize: "0.625rem", letterSpacing: "0.1em", textTransform: "uppercase",
             transition: "background var(--transition-fast), color var(--transition-fast)",
             whiteSpace: "nowrap", minHeight: "36px", cursor: "pointer",
           }}
+          onMouseEnter={e => {
+            const el = e.currentTarget as HTMLElement;
+            el.style.background = "rgba(37,211,102,0.16)";
+            el.style.color      = "rgb(134,239,172)";
+          }}
+          onMouseLeave={e => {
+            const el = e.currentTarget as HTMLElement;
+            el.style.background = "rgba(37,211,102,0.08)";
+            el.style.color      = "rgb(74,222,128)";
+          }}
         >
           <WaIcon size="0.875rem" />
-          Quote
+          Request a Quote
         </button>
 
         <div style={{
-          width: "2.25rem", height: "2.25rem", borderRadius: "var(--radius-full)",
+          width: "2.25rem", height: "2.25rem",
+          borderRadius: "var(--radius-sm)",
           background: hovered ? "var(--color-amber)" : "var(--color-catalog-bg)",
           border: `1.5px solid ${hovered ? "var(--color-amber)" : "var(--color-border)"}`,
           display: "flex", alignItems: "center", justifyContent: "center",
@@ -361,7 +395,7 @@ export function GridCard({ product, showStock = true, priority }: ProductCardPro
         boxShadow: hovered
           ? "0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(232,160,32,0.08)"
           : "0 1px 4px rgba(0,0,0,0.12)",
-        transform: hovered ? "translateY(-0.5px)" : "translateY(0)",
+        transform: hovered ? "translateY(-2px)" : "translateY(0)",
         height: "100%", position: "relative",
       }}
     >
@@ -459,34 +493,39 @@ export function GridCard({ product, showStock = true, priority }: ProductCardPro
           <button
             type="button"
             onClick={(e) => openWhatsApp(e, product.name)}
-            aria-label={`Request quote for ${product.name} via WhatsApp`}
+            aria-label={`Request a quote for ${product.name} via WhatsApp`}
             style={{
               flex: 1, display: "flex", alignItems: "center", justifyContent: "center", gap: "0.375rem",
               padding: "0.5625rem 0.75rem",
-              background: "rgba(37,211,102,0.08)", border: "1.5px solid rgba(37,211,102,0.25)",
-              borderRadius: "var(--radius-md)", color: "rgb(21,128,61)",
+              background: "rgba(37,211,102,0.08)",
+              border: "1.5px solid rgba(37,211,102,0.25)",
+              borderRadius: "var(--radius-sm)",
+              color: "rgb(74,222,128)",
               fontFamily: "var(--font-display)", fontWeight: 700,
               fontSize: "0.625rem", letterSpacing: "0.1em", textTransform: "uppercase",
               transition: "background var(--transition-fast), border-color var(--transition-fast), color var(--transition-fast)",
               minHeight: "36px", cursor: "pointer",
             }}
             onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.background  = "rgb(37,211,102)";
-              (e.currentTarget as HTMLElement).style.color       = "var(--color-ink)";
-              (e.currentTarget as HTMLElement).style.borderColor = "rgb(37,211,102)";
+              const el = e.currentTarget as HTMLElement;
+              el.style.background  = "rgba(37,211,102,0.16)";
+              el.style.borderColor = "rgba(37,211,102,0.45)";
+              el.style.color       = "rgb(134,239,172)";
             }}
             onMouseLeave={e => {
-              (e.currentTarget as HTMLElement).style.background  = "rgba(37,211,102,0.08)";
-              (e.currentTarget as HTMLElement).style.color       = "rgb(21,128,61)";
-              (e.currentTarget as HTMLElement).style.borderColor = "rgba(37,211,102,0.25)";
+              const el = e.currentTarget as HTMLElement;
+              el.style.background  = "rgba(37,211,102,0.08)";
+              el.style.borderColor = "rgba(37,211,102,0.25)";
+              el.style.color       = "rgb(74,222,128)";
             }}
           >
             <WaIcon size="0.875rem" />
-            Request Quote
+            Request a Quote
           </button>
 
           <div style={{
-            width: "2rem", height: "2rem", borderRadius: "var(--radius-full)",
+            width: "2rem", height: "2rem",
+            borderRadius: "var(--radius-sm)",
             background: hovered ? "var(--color-amber)" : "var(--color-catalog-bg)",
             border: `1.5px solid ${hovered ? "var(--color-amber)" : "var(--color-border)"}`,
             display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,

@@ -3,40 +3,21 @@
 //
 // Infinite CSS marquee carousel — silky smooth, zero JS for animation control.
 //
-// CHANGE: Price row replaced with WhatsApp "Request Quote" button,
-// matching the ProductCard convention site-wide. The card <Link>
-// still navigates to the product detail page. The WA button uses
-// window.open + stopPropagation so it opens WhatsApp without triggering
-// card nav.
-//
 // NOTE: WhatsApp CTA is a <button> — NOT <a> — to avoid invalid nested
 // <a><a> HTML which causes React hydration errors.
-//
-// Key animation decisions (unchanged):
-//   1. PURE CSS PAUSE — `.carousel-wrap:hover .carousel-track` → paused
-//   2. :has() selector pauses on individual card hover too
-//   3. linear timing at 50px/s gives natural conveyor-belt feel
-//   4. will-change: transform → GPU composite layer, no repaints
-//   5. Card hover lift is pure CSS, zero React state
 
 import Link from "next/link";
 import type { ProductListItem } from "@/types";
 
 // ─── Config ───────────────────────────────────────────────────────────────────
 
-const WA_NUMBER = "254725692649"; // keep in sync with ProductCard/index.tsx
-
-function waHref(productName: string) {
-  const msg = encodeURIComponent(
-    `Hi, I'd like to request a quote for: ${productName}`
-  );
-  return `https://wa.me/${WA_NUMBER}?text=${msg}`;
-}
+const WA_NUMBER = "254725692649";
 
 function openWhatsApp(e: React.MouseEvent, productName: string) {
   e.preventDefault();
   e.stopPropagation();
-  window.open(waHref(productName), "_blank", "noopener,noreferrer");
+  const msg = encodeURIComponent(`Hi, I'd like to request a quote for: ${productName}`);
+  window.open(`https://wa.me/${WA_NUMBER}?text=${msg}`, "_blank", "noopener,noreferrer");
 }
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
@@ -68,7 +49,6 @@ function WaIcon() {
 }
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
-// No useState — all hover effects driven by CSS `.carousel-card:hover`
 
 function CarouselCard({
   product,
@@ -133,17 +113,26 @@ function CarouselCard({
 
         {/* ── Footer: stock badge + WhatsApp CTA ── */}
         <div className="carousel-card-footer">
-
-          {/* Stock indicator */}
           <span
             className="carousel-card-stock"
             style={{ color: stockColor(qty) }}
           >
-            ● {stockLabel(qty)}
+            <span
+              style={{
+                display:      "inline-block",
+                width:        "6px",
+                height:       "6px",
+                borderRadius: "50%",
+                background:   stockColor(qty),
+                marginRight:  "5px",
+                verticalAlign:"middle",
+                flexShrink:   0,
+              }}
+              aria-hidden="true"
+            />
+            {stockLabel(qty)}
           </span>
 
-          {/* WhatsApp quote button — <button> prevents nested <a> hydration error.
-              window.open + stopPropagation opens WhatsApp without card navigation. */}
           <button
             type="button"
             onClick={(e) => openWhatsApp(e, product.name)}
@@ -151,7 +140,7 @@ function CarouselCard({
             className="carousel-card-wa-btn"
           >
             <WaIcon />
-            Request Quote
+            Request a Quote
           </button>
         </div>
       </div>
@@ -166,45 +155,42 @@ interface ProductCarouselProps {
 }
 
 const CARD_WIDTH = 300;
-const CARD_GAP   = 24;   // px — matches var(--space-6)
-const SPEED_PX_S = 50;   // px per second — slow & natural
+const CARD_GAP   = 24;
+const SPEED_PX_S = 50;
 
 export default function ProductCarousel({ products }: ProductCarouselProps) {
   if (products.length === 0) {
     return (
       <p style={{
         textAlign: "center",
-        padding: "var(--space-12)",
-        color: "var(--color-text-muted)",
+        padding:   "var(--space-12)",
+        color:     "var(--color-text-muted)",
       }}>
         No featured products at the moment.
       </p>
     );
   }
 
-  // Duplicate for seamless loop
   const doubled  = [...products, ...products];
   const totalPx  = products.length * (CARD_WIDTH + CARD_GAP);
-  const duration = Math.round(totalPx / SPEED_PX_S); // seconds
+  const duration = Math.round(totalPx / SPEED_PX_S);
 
   return (
     <>
       <style>{`
-        /* ── Marquee keyframe ─────────────────────────────────────────────── */
+        /* ── Marquee keyframe ─────────────────────────────────────────── */
         @keyframes marquee {
           from { transform: translateX(0); }
           to   { transform: translateX(-50%); }
         }
 
-        /* ── Wrapper ──────────────────────────────────────────────────────── */
+        /* ── Wrapper ──────────────────────────────────────────────────── */
         .carousel-wrap {
-          position:     relative;
-          overflow:     hidden;
+          position:      relative;
+          overflow:      hidden;
           padding-block: var(--space-3) var(--space-6);
-          cursor:       default;
+          cursor:        default;
         }
-
-        /* Edge fade masks */
         .carousel-wrap::before,
         .carousel-wrap::after {
           content:        "";
@@ -220,10 +206,10 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
         }
         .carousel-wrap::after {
           right:      0;
-          background: linear-gradient(to left,  var(--color-steel) 0%, transparent 100%);
+          background: linear-gradient(to left, var(--color-steel) 0%, transparent 100%);
         }
 
-        /* ── Track ────────────────────────────────────────────────────────── */
+        /* ── Track ────────────────────────────────────────────────────── */
         .carousel-track {
           display:        flex;
           gap:            ${CARD_GAP}px;
@@ -233,37 +219,34 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
           animation:      marquee ${duration}s linear infinite;
           animation-play-state: running;
         }
-
-        /* Pure-CSS pause — no JS, no re-renders */
         .carousel-wrap:hover .carousel-track,
         .carousel-wrap:has(.carousel-card:hover) .carousel-track {
           animation-play-state: paused;
         }
-
         @media (prefers-reduced-motion: reduce) {
           .carousel-track { animation: none !important; }
         }
 
-        /* ── Card ─────────────────────────────────────────────────────────── */
+        /* ── Card ─────────────────────────────────────────────────────── */
         .carousel-card {
           flex:            0 0 ${CARD_WIDTH}px;
           width:           ${CARD_WIDTH}px;
           display:         flex;
           flex-direction:  column;
-          border-radius:   var(--radius-xl);
+          border-radius:   var(--radius-lg);
           border:          1px solid rgba(255,255,255,0.08);
           background:      rgba(255,255,255,0.03);
           overflow:        hidden;
           text-decoration: none;
           user-select:     none;
           transition:
-            border-color  240ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-            background    240ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-            transform     240ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
-            box-shadow    240ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border-color 240ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+            background   240ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+            transform    240ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+            box-shadow   240ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .carousel-card:hover {
-          border-color: rgba(232,160,32,0.4);
+          border-color: rgba(232,160,32,0.40);
           background:   rgba(232,160,32,0.04);
           transform:    translateY(-5px) scale(1.015);
           box-shadow:   0 20px 56px rgba(0,0,0,0.55),
@@ -274,7 +257,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
           outline-offset: 3px;
         }
 
-        /* ── Image ────────────────────────────────────────────────────────── */
+        /* ── Image ────────────────────────────────────────────────────── */
         .carousel-card-img-wrap {
           position:     relative;
           overflow:     hidden;
@@ -284,9 +267,9 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
         }
         .carousel-card-img {
           width: 100%; height: 100%;
-          object-fit:  cover;
-          display:     block;
-          transition:  transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+          object-fit: cover;
+          display:    block;
+          transition: transform 500ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
         .carousel-card:hover .carousel-card-img { transform: scale(1.07); }
 
@@ -295,6 +278,8 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
           display: flex; align-items: center; justify-content: center;
           font-size: 2.5rem;
         }
+
+        /* Badge — rectangular to match chip style, not pill */
         .carousel-card-badge {
           position:       absolute;
           top:            var(--space-3);
@@ -303,10 +288,10 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
           color:          var(--color-ink);
           font-size:      0.6rem;
           font-weight:    800;
-          letter-spacing: 0.12em;
+          letter-spacing: 0.10em;
           text-transform: uppercase;
-          padding:        0.25rem 0.6rem;
-          border-radius:  var(--radius-full);
+          padding:        0.25rem 0.55rem;
+          border-radius:  var(--radius-sm);
           z-index:        1;
         }
         .carousel-card-img-gradient {
@@ -319,7 +304,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
         }
         .carousel-card:hover .carousel-card-img-gradient { opacity: 1; }
 
-        /* ── Body ─────────────────────────────────────────────────────────── */
+        /* ── Body ─────────────────────────────────────────────────────── */
         .carousel-card-body {
           padding:        var(--space-4);
           flex:           1;
@@ -331,16 +316,20 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
           display: flex; align-items: center; gap: var(--space-2);
         }
         .carousel-card-brand {
-          font-size:      0.65rem; font-weight: 700;
-          letter-spacing: 0.12em; text-transform: uppercase;
+          font-size:      0.65rem;
+          font-weight:    700;
+          letter-spacing: 0.12em;
+          text-transform: uppercase;
           color:          var(--color-amber);
         }
         .carousel-card-dot {
           color: rgba(255,255,255,0.15); font-size: 0.65rem;
         }
         .carousel-card-category {
-          font-size:      0.65rem; font-weight: 500;
-          letter-spacing: 0.08em; text-transform: uppercase;
+          font-size:      0.65rem;
+          font-weight:    500;
+          letter-spacing: 0.08em;
+          text-transform: uppercase;
           color:          rgba(255,255,255,0.35);
         }
         .carousel-card-name {
@@ -371,7 +360,7 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
           margin:             0;
         }
 
-        /* ── Footer: stock + WA button ────────────────────────────────────── */
+        /* ── Footer ───────────────────────────────────────────────────── */
         .carousel-card-footer {
           display:         flex;
           align-items:     center;
@@ -383,6 +372,8 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
           flex-wrap:       wrap;
         }
         .carousel-card-stock {
+          display:        flex;
+          align-items:    center;
           font-size:      0.65rem;
           font-weight:    600;
           letter-spacing: 0.06em;
@@ -390,38 +381,37 @@ export default function ProductCarousel({ products }: ProductCarouselProps) {
           flex-shrink:    0;
         }
 
-        /* WhatsApp CTA inside the card — styled as <button>, not <a> */
+        /* WhatsApp button — rectangular, not oval */
         .carousel-card-wa-btn {
-          display:        inline-flex;
-          align-items:    center;
-          justify-content:center;
-          gap:            0.3rem;
-          padding:        0.375rem 0.75rem;
-          background:     rgba(37,211,102,0.10);
-          border:         1.5px solid rgba(37,211,102,0.25);
-          border-radius:  var(--radius-full);
-          color:          rgb(21,128,61);
-          font-family:    var(--font-display);
-          font-weight:    700;
-          font-size:      0.625rem;
-          letter-spacing: 0.1em;
-          text-transform: uppercase;
-          white-space:    nowrap;
-          flex-shrink:    0;
-          cursor:         pointer;
-          /* CSS-only hover — no JS, no state */
+          display:         inline-flex;
+          align-items:     center;
+          justify-content: center;
+          gap:             0.35rem;
+          padding:         0.3rem 0.65rem;
+          background:      rgba(37,211,102,0.08);
+          border:          1px solid rgba(37,211,102,0.22);
+          border-radius:   var(--radius-sm);
+          color:           rgb(74,222,128);
+          font-family:     var(--font-display);
+          font-weight:     700;
+          font-size:       0.625rem;
+          letter-spacing:  0.08em;
+          text-transform:  uppercase;
+          white-space:     nowrap;
+          flex-shrink:     0;
+          cursor:          pointer;
           transition:
-            background     var(--transition-fast),
-            border-color   var(--transition-fast),
-            color          var(--transition-fast);
+            background   var(--transition-fast),
+            border-color var(--transition-fast),
+            color        var(--transition-fast);
         }
         .carousel-card-wa-btn:hover {
-          background:   rgb(37,211,102);
-          border-color: rgb(37,211,102);
-          color:        var(--color-ink);
+          background:   rgba(37,211,102,0.18);
+          border-color: rgba(37,211,102,0.50);
+          color:        rgb(134,239,172);
         }
         .carousel-card-wa-btn:focus-visible {
-          outline:        3px solid rgb(37,211,102);
+          outline:        3px solid rgb(74,222,128);
           outline-offset: 2px;
         }
       `}</style>
