@@ -28,14 +28,6 @@ const FOOTER_COMPANY = [
   { href: "/careers", label: "Careers"       },
 ];
 
-const FOOTER_SUPPORT = [
-  { href: "/faq",      label: "FAQ"            },
-  { href: "/shipping", label: "Shipping"       },
-  { href: "/returns",  label: "Returns"        },
-  { href: "/privacy",  label: "Privacy Policy" },
-  { href: "/terms",    label: "Terms of Use"   },
-];
-
 const SOCIAL_LINKS = [
   {
     href: "https://linkedin.com", label: "LinkedIn",
@@ -93,6 +85,50 @@ function FooterLinkGroup({
           </li>
         ))}
       </ul>
+    </div>
+  );
+}
+
+// ─── FooterSupportContact ─────────────────────────────────────────────────────
+
+function FooterSupportContact() {
+  return (
+    <div className="footer-link-group">
+      <p className="eyebrow-light footer-link-heading">Contact</p>
+      <div className="footer-support-cards">
+        <a
+          href="mailto:hello@jocaxsolutions.co.ke"
+          className="footer-support-card"
+          aria-label="Email Jocax Solutions support"
+        >
+          <span className="footer-support-card__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="2" y="4" width="20" height="16" rx="2"/>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
+            </svg>
+          </span>
+          <span className="footer-support-card__content">
+            <span className="footer-support-card__label">Email us</span>
+            <span className="footer-support-card__value">hello@jocaxsolutions.co.ke</span>
+          </span>
+        </a>
+
+        <a
+          href="tel:+254725692649"
+          className="footer-support-card"
+          aria-label="Call Jocax Solutions support"
+        >
+          <span className="footer-support-card__icon" aria-hidden="true">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.84a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </span>
+          <span className="footer-support-card__content">
+            <span className="footer-support-card__label">Call us</span>
+            <span className="footer-support-card__value">+254 725 692 649</span>
+          </span>
+        </a>
+      </div>
     </div>
   );
 }
@@ -214,38 +250,12 @@ export default function Footer() {
               ))}
             </div>
 
-            {/* Contact info */}
-            <div className="footer-contact-cards">
-              <a href="mailto:hello@jocaxsolutions.co.ke" className="footer-contact-card" aria-label="Email Jocax Solutions">
-                <span className="footer-contact-card__icon" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <rect x="2" y="4" width="20" height="16" rx="2"/>
-                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>
-                  </svg>
-                </span>
-                <span className="footer-contact-card__content">
-                  <span className="footer-contact-card__label">Email us</span>
-                  <span className="footer-contact-card__value">hello@jocaxsolutions.co.ke</span>
-                </span>
-              </a>
-              <a href="tel:+254725692649" className="footer-contact-card" aria-label="Call Jocax Solutions">
-                <span className="footer-contact-card__icon" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.24h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 8.84a16 16 0 0 0 6 6l.96-.96a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
-                  </svg>
-                </span>
-                <span className="footer-contact-card__content">
-                  <span className="footer-contact-card__label">Call us</span>
-                  <span className="footer-contact-card__value">+254 725 692 649</span>
-                </span>
-              </a>
-            </div>
           </div>
 
           {/* ── Link columns ─────────────────────────────────────────── */}
-          <FooterLinkGroup heading="Catalog"  links={FOOTER_CATALOG}  />
-          <FooterLinkGroup heading="Company"  links={FOOTER_COMPANY}  />
-          <FooterLinkGroup heading="Support"  links={FOOTER_SUPPORT}  />
+          <FooterLinkGroup heading="Catalog" links={FOOTER_CATALOG} />
+          <FooterLinkGroup heading="Company" links={FOOTER_COMPANY} />
+          <FooterSupportContact />
 
         </div>
 
@@ -259,25 +269,16 @@ export default function Footer() {
             © {new Date().getFullYear()} Jocax Solutions Limited. All rights reserved.
           </small>
 
-          <nav aria-label="Legal links">
-            <ul role="list" style={{
-              listStyle: "none", margin: 0, padding: 0,
-              display: "flex", gap: "var(--space-6)", flexWrap: "wrap",
-              justifyContent: "center",
-            }}>
-              {[
-                { href: "/privacy",     label: "Privacy" },
-                { href: "/terms",       label: "Terms"   },
-                { href: "/sitemap.xml", label: "Sitemap" },
-              ].map(({ href, label }) => (
-                <li key={href}>
-                  <Link href={href} className="footer-link" style={{ fontSize: "var(--text-sm)" }}>
-                    {label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
+          <a
+            href="https://brandlynkdigitalsolutions.co.ke/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="footer-brandlynk"
+            aria-label="Designed by Brandlynk Digital Solutions — opens in new tab"
+          >
+            <span className="footer-brandlynk__prefix">Designed by</span>
+            <span className="footer-brandlynk__name">Brandlynk</span>
+          </a>
         </div>
 
       </div>
@@ -308,17 +309,11 @@ export default function Footer() {
           object-fit: contain;
           display:    block;
           background: transparent !important;
-          /*
-           * Same SVG recolor as header:
-           * navy/black → white/gray, amber/gold preserved.
-           */
           filter: url(#footer-logo-recolor);
         }
-        /* Tiny screens */
         @media (max-width: 359px) {
           .footer-logo-img { height: 34px; }
         }
-        /* Desktop */
         @media (min-width: 1024px) {
           .footer-logo-img { height: 52px; }
         }
@@ -359,19 +354,18 @@ export default function Footer() {
           .footer-link-group { text-align: left; align-items: flex-start; }
         }
 
-        /* ── Contact cards ── */
-        .footer-contact-cards {
+        /* ── Support contact cards ── */
+        .footer-support-cards {
           display:        flex;
           flex-direction: column;
           gap:            var(--space-3);
-          margin-top:     var(--space-6);
           width:          100%;
           align-items:    center;
         }
-        @media (min-width: 640px) {
-          .footer-contact-cards { align-items: flex-start; }
+        @media (min-width: 1024px) {
+          .footer-support-cards { align-items: flex-start; }
         }
-        .footer-contact-card {
+        .footer-support-card {
           display:         flex;
           align-items:     center;
           gap:             var(--space-3);
@@ -388,17 +382,17 @@ export default function Footer() {
             border-color  var(--transition-fast),
             transform     var(--transition-fast);
         }
-        .footer-contact-card:hover {
+        .footer-support-card:hover {
           background:   rgba(232, 160, 32, 0.08);
           border-color: rgba(232, 160, 32, 0.30);
           transform:    translateX(3px);
         }
-        .footer-contact-card:focus-visible {
+        .footer-support-card:focus-visible {
           outline:        3px solid var(--color-amber);
           outline-offset: 3px;
           border-radius:  var(--radius-md);
         }
-        .footer-contact-card__icon {
+        .footer-support-card__icon {
           display:         flex;
           align-items:     center;
           justify-content: center;
@@ -411,16 +405,16 @@ export default function Footer() {
           flex-shrink:     0;
           transition:      background var(--transition-fast);
         }
-        .footer-contact-card:hover .footer-contact-card__icon {
+        .footer-support-card:hover .footer-support-card__icon {
           background: rgba(232, 160, 32, 0.22);
         }
-        .footer-contact-card__content {
+        .footer-support-card__content {
           display:        flex;
           flex-direction: column;
           gap:            2px;
           min-width:      0;
         }
-        .footer-contact-card__label {
+        .footer-support-card__label {
           display:        block;
           font-size:      10px;
           font-weight:    700;
@@ -429,7 +423,7 @@ export default function Footer() {
           color:          var(--color-amber, #E8A020);
           line-height:    1;
         }
-        .footer-contact-card__value {
+        .footer-support-card__value {
           display:       block;
           font-size:     var(--text-sm);
           font-weight:   500;
@@ -439,7 +433,7 @@ export default function Footer() {
           overflow:      hidden;
           text-overflow: ellipsis;
         }
-        .footer-contact-card:hover .footer-contact-card__value {
+        .footer-support-card:hover .footer-support-card__value {
           color: var(--color-white);
         }
 
@@ -553,7 +547,32 @@ export default function Footer() {
             justify-content: space-between;
             text-align: left;
           }
-          .footer-bottom nav ul { justify-content: flex-start; }
+        }
+
+        /* ── Brandlynk credit ── */
+        .footer-brandlynk {
+          display:         inline-flex;
+          align-items:     center;
+          gap:             var(--space-1);
+          text-decoration: none;
+          transition:      opacity var(--transition-fast);
+        }
+        .footer-brandlynk:hover { opacity: 0.8; }
+        .footer-brandlynk:focus-visible {
+          outline:        3px solid var(--color-amber);
+          outline-offset: 3px;
+          border-radius:  var(--radius-sm);
+        }
+        .footer-brandlynk__prefix {
+          font-size:   var(--text-sm);
+          color:       var(--color-text-muted);
+          font-weight: 400;
+        }
+        .footer-brandlynk__name {
+          font-size:      var(--text-sm);
+          font-weight:    700;
+          color:          var(--color-amber, #E8A020);
+          letter-spacing: 0.02em;
         }
       `}</style>
     </footer>
