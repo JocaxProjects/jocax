@@ -37,9 +37,9 @@ const CONTACT_CHANNELS = [
   {
     icon: "M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z",
     label: "Nairobi Office",
-    primary: "Industrial Area, Enterprise Road",
-    secondary: "Nairobi, Kenya — P.O. Box 12345",
-    href: "https://maps.google.com/?q=Industrial+Area+Nairobi",
+    primary: "Mombasa Road",
+    secondary: "Opposite Hilton Garden Inn, Nairobi",
+    href: "https://maps.google.com/?q=Mombasa+Road+Nairobi",
     color: "#10b981",
   },
   {
@@ -53,25 +53,19 @@ const CONTACT_CHANNELS = [
 ];
 
 const QUICK_LINKS = [
-  { label: "Request a Quote",     href: "/products"         },
-  { label: "Browse Full Catalog", href: "/products"         },
-  { label: "Search Equipment",    href: "/search"           },
-  { label: "Product Categories",  href: "/categories"       },
-  { label: "About Jocax",         href: "/about"            },
+  { label: "Request a Quote", href: "/products" },
+  { label: "Browse Full Catalog", href: "/products" },
+  { label: "Search Equipment", href: "/search" },
+  { label: "Product Categories", href: "/categories" },
+  { label: "About Jocax", href: "/about" },
 ];
 
 const OFFICES = [
   {
     city: "Nairobi",
-    address: "Industrial Area, Enterprise Road",
+    address: "Mombasa Road, opposite Hilton Garden Inn",
     phone: "+254 725 002 619",
     isPrimary: true,
-  },
-  {
-    city: "Mombasa",
-    address: "Kilindini Road, Old Town",
-    phone: "+254 720 654 321",
-    isPrimary: false,
   },
 ];
 
@@ -594,11 +588,11 @@ export default function ContactPage() {
                           d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                       </svg>
                     </div>
-                    <p className="s-label" style={{ color: "rgba(255,255,255,0.5)" }}>Industrial Area, Nairobi</p>
+                    <p className="s-label" style={{ color: "rgba(255,255,255,0.5)" }}>Mombasa Road, Nairobi</p>
                   </div>
                   {/* Open in maps link */}
                   <a
-                    href="https://maps.google.com/?q=Industrial+Area+Nairobi"
+                    href="https://maps.google.com/?q=Pili+Trade+Centre+Mombasa+Road+Nairobi"
                     target="_blank" rel="noopener noreferrer"
                     style={{
                       position: "absolute", bottom: "0.875rem", right: "0.875rem",

@@ -13,20 +13,20 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_LINKS = [
-  { href: "/",           label: "Home"       },
-  { href: "/products",   label: "Catalog"    },
+  { href: "/", label: "Home" },
+  { href: "/products", label: "Catalog" },
   { href: "/categories", label: "Categories" },
-  { href: "/search",     label: "Search"     },
-  { href: "/about",      label: "About"      },
-  { href: "/contact",    label: "Contact"    },
+  { href: "/search", label: "Search" },
+  { href: "/about", label: "About" },
+  { href: "/contact", label: "Contact" },
 ];
 
 // ── Contact details (single source of truth) ──────────────────────────────
 const CONTACT = {
-  phone:    "+254 725 002 619",
+  phone: "+254 725 002 619",
   phoneTel: "tel:+254725002619",
-  email:    "sale@jocaxsolutions.co.ke",
-  emailHref:"mailto:sale@jocaxsolutions.co.ke",
+  email: "sales@jocaxsolutions.co.ke",
+  emailHref: "mailto:sales@jocaxsolutions.co.ke",
 };
 
 function isActive(pathname: string, href: string) {
@@ -35,15 +35,15 @@ function isActive(pathname: string, href: string) {
 }
 
 export default function Header() {
-  const pathname                      = usePathname();
-  const [menuOpen, setMenuOpen]       = useState(false);
-  const [scrolled, setScrolled]       = useState(false);
-  const [searchOpen, setSearchOpen]   = useState(false);
+  const pathname = usePathname();
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const searchRef                     = useRef<HTMLInputElement>(null);
-  const mobileSearchRef               = useRef<HTMLInputElement>(null);
-  const prevPathnameRef               = useRef(pathname);
-  const menuButtonRef                 = useRef<HTMLButtonElement>(null);
+  const searchRef = useRef<HTMLInputElement>(null);
+  const mobileSearchRef = useRef<HTMLInputElement>(null);
+  const prevPathnameRef = useRef(pathname);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -121,14 +121,14 @@ export default function Header() {
           <div className="container jx-contact-strip__inner">
             <a href={CONTACT.phoneTel} className="jx-contact-strip__item" aria-label={`Call us: ${CONTACT.phone}`}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.59.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.59a1 1 0 0 1-.25 1.01l-2.2 2.19Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.59.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.59a1 1 0 0 1-.25 1.01l-2.2 2.19Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
               {CONTACT.phone}
             </a>
             <a href={CONTACT.emailHref} className="jx-contact-strip__item" aria-label={`Email us: ${CONTACT.email}`}>
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.8"/>
-                <path d="M2 8l10 6 10-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                <path d="M2 8l10 6 10-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
               </svg>
               {CONTACT.email}
             </a>
@@ -154,7 +154,7 @@ export default function Header() {
           <div className="jx-search-desktop" role="search" aria-label="Site search">
             <span className="jx-search-icon" aria-hidden="true">
               <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                <path d="M6.5 1a5.5 5.5 0 1 0 3.67 9.59l2.62 2.62a.75.75 0 1 0 1.06-1.06l-2.62-2.62A5.5 5.5 0 0 0 6.5 1Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" fill="currentColor"/>
+                <path d="M6.5 1a5.5 5.5 0 1 0 3.67 9.59l2.62 2.62a.75.75 0 1 0 1.06-1.06l-2.62-2.62A5.5 5.5 0 0 0 6.5 1Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" fill="currentColor" />
               </svg>
             </span>
             <input
@@ -210,11 +210,11 @@ export default function Header() {
             >
               {searchOpen ? (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                  <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                  <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
               ) : (
                 <svg width="16" height="16" viewBox="0 0 15 15" fill="none">
-                  <path d="M6.5 1a5.5 5.5 0 1 0 3.67 9.59l2.62 2.62a.75.75 0 1 0 1.06-1.06l-2.62-2.62A5.5 5.5 0 0 0 6.5 1Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" fill="currentColor"/>
+                  <path d="M6.5 1a5.5 5.5 0 1 0 3.67 9.59l2.62 2.62a.75.75 0 1 0 1.06-1.06l-2.62-2.62A5.5 5.5 0 0 0 6.5 1Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" fill="currentColor" />
                 </svg>
               )}
             </button>
@@ -228,8 +228,8 @@ export default function Header() {
               onClick={() => setMenuOpen((o) => !o)}
               className={`jx-hamburger${menuOpen ? " jx-hamburger--open" : ""}`}
             >
-              <span className="jx-hamburger__bar jx-hamburger__bar--top"    aria-hidden="true" />
-              <span className="jx-hamburger__bar jx-hamburger__bar--mid"    aria-hidden="true" />
+              <span className="jx-hamburger__bar jx-hamburger__bar--top" aria-hidden="true" />
+              <span className="jx-hamburger__bar jx-hamburger__bar--mid" aria-hidden="true" />
               <span className="jx-hamburger__bar jx-hamburger__bar--bottom" aria-hidden="true" />
             </button>
           </div>
@@ -246,7 +246,7 @@ export default function Header() {
             <div className="jx-search-mobile__field">
               <span className="jx-search-icon" aria-hidden="true">
                 <svg width="15" height="15" viewBox="0 0 15 15" fill="none">
-                  <path d="M6.5 1a5.5 5.5 0 1 0 3.67 9.59l2.62 2.62a.75.75 0 1 0 1.06-1.06l-2.62-2.62A5.5 5.5 0 0 0 6.5 1Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" fill="currentColor"/>
+                  <path d="M6.5 1a5.5 5.5 0 1 0 3.67 9.59l2.62 2.62a.75.75 0 1 0 1.06-1.06l-2.62-2.62A5.5 5.5 0 0 0 6.5 1Zm-4 5.5a4 4 0 1 1 8 0 4 4 0 0 1-8 0Z" fill="currentColor" />
                 </svg>
               </span>
               <input
@@ -268,7 +268,7 @@ export default function Header() {
                   tabIndex={searchOpen ? 0 : -1}
                 >
                   <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
-                    <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/>
+                    <path d="M2 2l12 12M14 2L2 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </button>
               )}
@@ -311,7 +311,7 @@ export default function Header() {
                     <span className="jx-drawer__link-text">{label}</span>
                     <span className="jx-drawer__link-arrow" aria-hidden="true">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                        <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
                       </svg>
                     </span>
                   </Link>
@@ -331,7 +331,7 @@ export default function Header() {
             >
               <span className="jx-drawer__contact-icon" aria-hidden="true">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                  <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.59.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.59a1 1 0 0 1-.25 1.01l-2.2 2.19Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.01-.24 11.47 11.47 0 0 0 3.59.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1c0 1.25.2 2.45.57 3.59a1 1 0 0 1-.25 1.01l-2.2 2.19Z" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </span>
               {CONTACT.phone}
@@ -344,8 +344,8 @@ export default function Header() {
             >
               <span className="jx-drawer__contact-icon" aria-hidden="true">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none">
-                  <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.8"/>
-                  <path d="M2 8l10 6 10-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"/>
+                  <rect x="2" y="4" width="20" height="16" rx="2" stroke="currentColor" strokeWidth="1.8" />
+                  <path d="M2 8l10 6 10-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
                 </svg>
               </span>
               {CONTACT.email}
@@ -366,7 +366,7 @@ export default function Header() {
             >
               Get a Quote
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"/>
+                <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
               </svg>
             </Link>
           </div>
