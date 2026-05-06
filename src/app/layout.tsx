@@ -8,6 +8,8 @@ import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { headers } from "next/headers";
 
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke";
+
 // Body font — modern, clean, highly readable at all sizes
 const outfit = Outfit({
   variable: "--font-outfit",
@@ -25,9 +27,75 @@ const oswald = Oswald({
 });
 
 export const metadata: Metadata = {
-  title: "Jocax Solutions | Commercial Kitchen Equipment",
+  metadataBase: new URL(SITE_URL),
+
+  title: {
+    default: "Jocax Solutions | Commercial Kitchen Equipment Kenya",
+    template: "%s | Jocax Solutions",
+  },
   description:
-    "Professional-grade commercial kitchen equipment for restaurants, hotels, and food service operations.",
+    "Kenya's leading supplier of professional-grade commercial kitchen equipment for restaurants, hotels, and food service operations. Shop ovens, fryers, refrigeration, and more.",
+
+  keywords: [
+    "commercial kitchen equipment Kenya",
+    "restaurant equipment Nairobi",
+    "hotel kitchen equipment",
+    "catering equipment Kenya",
+    "commercial ovens Kenya",
+    "industrial refrigeration Kenya",
+    "food service equipment",
+    "Jocax Solutions",
+  ],
+
+  authors: [{ name: "Jocax Solutions", url: SITE_URL }],
+  creator: "Jocax Solutions",
+  publisher: "Jocax Solutions",
+
+  // Canonical URL — prevents duplicate-content penalties
+  alternates: {
+    canonical: "/",
+  },
+
+  openGraph: {
+    type: "website",
+    locale: "en_KE",
+    url: SITE_URL,
+    siteName: "Jocax Solutions",
+    title: "Jocax Solutions | Commercial Kitchen Equipment Kenya",
+    description: "Kenya's leading supplier of professional-grade commercial kitchen equipment for restaurants, hotels, and food service operations.",
+    images: [
+      {
+        url: "/logo.png",
+        width: 512,
+        height: 512,
+        alt: "Jocax Solutions Logo",
+      },
+    ],
+  },
+
+  twitter: {
+    card: "summary_large_image",
+    title: "Jocax Solutions | Commercial Kitchen Equipment Kenya",
+    description: "Kenya's leading supplier of professional-grade commercial kitchen equipment.",
+    images: ["/logo.png"],
+  },
+
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+
+  verification: {
+    // Add your Google Search Console verification token here once you have it:
+    // google: "YOUR_GOOGLE_VERIFICATION_TOKEN",
+  },
 };
 
 export default async function RootLayout({
@@ -53,6 +121,32 @@ export default async function RootLayout({
         className={`${outfit.variable} ${oswald.variable} antialiased`}
         suppressHydrationWarning
       >
+        {/* Organization structured data — helps Google understand the business */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              name: "Jocax Solutions",
+              url: SITE_URL,
+              logo: `${SITE_URL}/logo.png`,
+              description:
+                "Kenya's leading supplier of professional-grade commercial kitchen equipment for restaurants, hotels, and food service operations.",
+              address: {
+                "@type": "PostalAddress",
+                addressCountry: "KE",
+                addressLocality: "Nairobi",
+              },
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer service",
+                availableLanguage: ["English"],
+              },
+              sameAs: [],
+            }),
+          }}
+        />
         {!isAdmin && <Header />}
         {children}
         {!isAdmin && <Footer />}
