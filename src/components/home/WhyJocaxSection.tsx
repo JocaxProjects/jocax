@@ -18,9 +18,9 @@ function useBreakpoint() {
   useEffect(() => {
     const update = () => {
       const w = window.innerWidth;
-      if (w < 640)       setBp("mobile");
+      if (w < 640) setBp("mobile");
       else if (w < 1024) setBp("tablet");
-      else               setBp("desktop");
+      else setBp("desktop");
     };
     update();
     window.addEventListener("resize", update);
@@ -31,9 +31,9 @@ function useBreakpoint() {
 }
 
 export default function WhyJocaxSection() {
-  const bp        = useBreakpoint();
-  const isMobile  = bp === "mobile";
-  const isTablet  = bp === "tablet";
+  const bp = useBreakpoint();
+  const isMobile = bp === "mobile";
+  const isTablet = bp === "tablet";
   const isDesktop = bp === "desktop";
 
   return (
@@ -112,13 +112,13 @@ export default function WhyJocaxSection() {
       <div className="container">
         <div
           style={{
-            display:             "grid",
+            display: "grid",
             gridTemplateColumns: isDesktop ? "3fr 2fr" : "1fr",
-            gap:                 isDesktop
+            gap: isDesktop
               ? "var(--space-20)"
               : isTablet
-              ? "var(--space-14)"
-              : "var(--space-10)",
+                ? "var(--space-14)"
+                : "var(--space-10)",
             alignItems: "center",
           }}
         >
@@ -128,24 +128,24 @@ export default function WhyJocaxSection() {
           ══════════════════════════════════════════════════════════════ */}
           <div
             style={{
-              display:       "flex",
+              display: "flex",
               flexDirection: "column",
-              alignItems:    isDesktop ? "flex-start" : "center",
-              textAlign:     isDesktop ? "left"       : "center",
+              alignItems: isDesktop ? "flex-start" : "center",
+              textAlign: isDesktop ? "left" : "center",
             }}
           >
             {/* Eyebrow — consistent amber dash pattern */}
             <p className="why-eyebrow">
               <span className="why-eyebrow-dash" aria-hidden="true" />
-              Why Jocax Solutions
+              Why Jocax Solutions Limited
             </p>
 
             {/* H2 */}
             <h2
               id="why-heading"
               style={{
-                color:        "var(--color-white)",
-                fontSize:     isMobile
+                color: "var(--color-white)",
+                fontSize: isMobile
                   ? "clamp(2rem, 9vw, 2.75rem)"
                   : "clamp(var(--text-3xl), 4vw, var(--text-5xl))",
                 marginBottom: 0,
@@ -159,14 +159,14 @@ export default function WhyJocaxSection() {
             {/* Body copy */}
             <p
               style={{
-                color:        "rgba(255,255,255,0.60)",
-                marginTop:    "var(--space-5)",
+                color: "rgba(255,255,255,0.60)",
+                marginTop: "var(--space-5)",
                 marginBottom: "var(--space-8)",
-                fontWeight:   300,
-                fontSize:     "var(--text-base)",
-                maxWidth:     isDesktop ? "420px" : "min(520px, 100%)",
+                fontWeight: 300,
+                fontSize: "var(--text-base)",
+                maxWidth: isDesktop ? "420px" : "min(520px, 100%)",
                 marginInline: isDesktop ? undefined : "auto",
-                lineHeight:   "var(--leading-relaxed)",
+                lineHeight: "var(--leading-relaxed)",
               }}
             >
               We supply restaurants, hotels, caterers, and institutional kitchens
@@ -191,9 +191,9 @@ export default function WhyJocaxSection() {
           <div
             role="list"
             style={{
-              display:             "grid",
+              display: "grid",
               gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr",
-              gap:                 isMobile ? "var(--space-4)" : "var(--space-4)",
+              gap: isMobile ? "var(--space-4)" : "var(--space-4)",
             }}
           >
             {WHY_FEATURES.map((f) => (
@@ -202,11 +202,11 @@ export default function WhyJocaxSection() {
                 role="listitem"
                 className="why-card"
                 style={{
-                  padding:       isMobile ? "var(--space-5)" : "var(--space-5)",
-                  display:       "flex",
+                  padding: isMobile ? "var(--space-5)" : "var(--space-5)",
+                  display: "flex",
                   flexDirection: isMobile ? "row" : "column",
-                  gap:           isMobile ? "var(--space-4)" : "var(--space-3)",
-                  alignItems:    isMobile ? "flex-start" : "flex-start",
+                  gap: isMobile ? "var(--space-4)" : "var(--space-3)",
+                  alignItems: isMobile ? "flex-start" : "flex-start",
                 }}
               >
                 {/* Icon box — consistent on all breakpoints */}
@@ -218,24 +218,24 @@ export default function WhyJocaxSection() {
                 <div style={{ flex: 1 }}>
                   <p
                     style={{
-                      fontFamily:    "var(--font-display)",
-                      fontWeight:    800,
-                      fontSize:      "var(--text-base)",
-                      color:         "var(--color-white)",
+                      fontFamily: "var(--font-display)",
+                      fontWeight: 800,
+                      fontSize: "var(--text-base)",
+                      color: "var(--color-white)",
                       letterSpacing: "var(--tracking-normal)",
                       textTransform: "none",
-                      marginBottom:  "var(--space-2)",
-                      maxWidth:      "none",
+                      marginBottom: "var(--space-2)",
+                      maxWidth: "none",
                     }}
                   >
                     {f.title}
                   </p>
                   <p
                     style={{
-                      fontSize:   "var(--text-sm)",
-                      color:      "rgba(255,255,255,0.48)",
+                      fontSize: "var(--text-sm)",
+                      color: "rgba(255,255,255,0.48)",
                       lineHeight: "var(--leading-relaxed)",
-                      maxWidth:   "none",
+                      maxWidth: "none",
                     }}
                   >
                     {f.text}

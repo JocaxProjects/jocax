@@ -10,9 +10,9 @@ import Link from "next/link";
 import ContactForm from "./ContactForm";
 
 export const metadata: Metadata = {
-  title: "Contact Us | Jocax Solutions",
+  title: "Contact Us | Jocax Solutions Limited",
   description:
-    "Get in touch with the Jocax Solutions team for product inquiries, quotes, installation services, and technical support. Based in Nairobi, serving East Africa.",
+    "Get in touch with the Jocax Solutions Limited team for product inquiries, quotes, installation services, and technical support. Based in Nairobi, serving East Africa.",
 };
 
 // ─── Static data ──────────────────────────────────────────────────────────────

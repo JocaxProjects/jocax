@@ -11,14 +11,14 @@ import { useState, FormEvent } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function AdminLoginPage() {
-  const router     = useRouter();
-  const params     = useSearchParams();
+  const router = useRouter();
+  const params = useSearchParams();
   const redirectTo = params.get("from") ?? "/admin/dashboard";
 
-  const [email,    setEmail]    = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error,    setError]    = useState("");
-  const [loading,  setLoading]  = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -27,9 +27,9 @@ export default function AdminLoginPage() {
 
     try {
       const res = await fetch("/api/auth/admin-login", {
-        method:  "POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body:    JSON.stringify({ email, password }),
+        body: JSON.stringify({ email, password }),
       });
 
       if (!res.ok) {
@@ -131,7 +131,7 @@ export default function AdminLoginPage() {
         <div className="login-card">
           <div className="login-logo">J</div>
           <h1 className="login-title">Admin Login</h1>
-          <p className="login-sub">Jocax Solutions · Kitchen Platform</p>
+          <p className="login-sub">Jocax Solutions Limited · Kitchen Platform</p>
 
           <form onSubmit={handleSubmit} noValidate>
             {error && <div className="login-error">{error}</div>}

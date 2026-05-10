@@ -13,13 +13,13 @@
 //      "View all N" → /products?category=slug
 //   4. Horizontal "More categories" strip  (each → /products?category=slug)
 
-import type { Metadata }    from "next";
-import { notFound }          from "next/navigation";
-import Link                  from "next/link";
-import { prisma }            from "@/lib/prisma";
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
 import { getCategoryBySlug, CATEGORIES } from "@/lib/categories.data";
 import type { ProductListItem } from "@/types";
-import type { Prisma }       from "@prisma/client";
+import type { Prisma } from "@prisma/client";
 
 // ─── Dynamic params ───────────────────────────────────────────────────────────
 // Must be true: without it, any slug not in generateStaticParams returns 404.
@@ -40,9 +40,9 @@ export async function generateMetadata(
   const cat = getCategoryBySlug(slug);
   if (!cat) return { title: "Category Not Found" };
   return {
-    title:       `${cat.name} | Jocax Solutions`,
+    title: `${cat.name} | Jocax Solutions Limited`,
     description: cat.description,
-    openGraph:   { title: `${cat.name} | Jocax Solutions`, images: [cat.heroImage] },
+    openGraph: { title: `${cat.name} | Jocax Solutions Limited`, images: [cat.heroImage] },
   };
 }
 
@@ -58,12 +58,12 @@ async function getCategoryProducts(
   const [products, total] = await Promise.all([
     prisma.product.findMany({
       where,
-      take:    12,
+      take: 12,
       orderBy: { isFeatured: "desc" },
       select: {
         id: true, name: true, slug: true, shortDescription: true,
         price: true, currency: true, isFeatured: true, stockQuantity: true,
-        brand:    { select: { id: true, name: true, slug: true, logoUrl: true } },
+        brand: { select: { id: true, name: true, slug: true, logoUrl: true } },
         category: { select: { id: true, name: true, slug: true, parentId: true } },
         images: { select: { imageUrl: true, altText: true }, orderBy: { position: "asc" }, take: 1 },
       },
@@ -189,9 +189,9 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
             <nav aria-label="Breadcrumb" style={{ marginBottom: "var(--space-5)" }}>
               <ol style={{ display: "flex", alignItems: "center", gap: "var(--space-2)", listStyle: "none", margin: 0, padding: 0, flexWrap: "wrap" }}>
                 {[
-                  { href: "/",           label: "Home"       },
+                  { href: "/", label: "Home" },
                   { href: "/categories", label: "Categories" },
-                  { href: null,          label: cat.name     },
+                  { href: null, label: cat.name },
                 ].map((crumb, i, arr) => (
                   <li key={crumb.label} style={{ display: "flex", alignItems: "center", gap: "var(--space-2)" }}>
                     {crumb.href ? (
@@ -320,7 +320,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
               <>
                 <div className="cat-product-grid">
                   {products.map((product) => {
-                    const img     = product.images?.[0];
+                    const img = product.images?.[0];
                     const inStock = (product.stockQuantity ?? 0) > 0;
                     return (
                       <Link key={product.id} href={`/products/${product.slug}`} className="cat-pcard">

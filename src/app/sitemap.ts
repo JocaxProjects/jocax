@@ -6,7 +6,11 @@
 import type { MetadataRoute } from "next";
 import { prisma } from "@/lib/prisma";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke";
+// Always use the custom domain — never the Vercel deployment URL.
+// Set NEXT_PUBLIC_SITE_URL=https://www.jocaxsolutions.co.ke in Vercel env vars.
+const SITE_URL = (
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke"
+).replace(/\/+$/, ""); // strip trailing slashes
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // ── Static pages ────────────────────────────────────────────────────────────

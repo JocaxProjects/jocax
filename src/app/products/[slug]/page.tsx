@@ -5,15 +5,15 @@
 //   ProductPurchasePanel → src/components/ProductDetail/ProductPurchasePanel.tsx
 //   ProductTabs          → src/components/ProductDetail/ProductTabs.tsx
 
-import { cache }    from "react";
+import { cache } from "react";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
-import ProductGallery       from "@/components/ProductDetail/ProductGallery";
+import ProductGallery from "@/components/ProductDetail/ProductGallery";
 import ProductPurchasePanel from "@/components/ProductDetail/ProductPurchasePanel";
-import ProductTabs          from "@/components/ProductDetail/ProductTabs";
-import RelatedProducts      from "@/components/ProductCard/RelatedProducts";
+import ProductTabs from "@/components/ProductDetail/ProductTabs";
+import RelatedProducts from "@/components/ProductCard/RelatedProducts";
 import type { ProductListItem } from "@/types";
 
 // ─── CRITICAL: Force dynamic rendering ───────────────────────────────────────
@@ -38,25 +38,25 @@ const getProduct = cache(async (slug: string) => {
   return prisma.product.findFirst({
     where: { slug, isActive: true },
     include: {
-      brand:      { select: { name: true, slug: true, logoUrl: true } },
-      category:   { select: { name: true, slug: true } },
-      images:     { orderBy: { position: "asc" } },
+      brand: { select: { name: true, slug: true, logoUrl: true } },
+      category: { select: { name: true, slug: true } },
+      images: { orderBy: { position: "asc" } },
       attributes: { include: { attribute: { select: { name: true, unit: true } } } },
-      variants:   true,
-      documents:  true,
+      variants: true,
+      documents: true,
     },
   });
 });
 
 async function getRelatedProducts(
   categoryId: string | null,
-  currentId:  string
+  currentId: string
 ): Promise<ProductListItem[]> {
   if (!categoryId) return [];
 
   const products = await prisma.product.findMany({
     where: {
-      isActive:   true,
+      isActive: true,
       categoryId,
       id: { not: currentId },
     },
@@ -64,12 +64,12 @@ async function getRelatedProducts(
     select: {
       id: true, name: true, slug: true, shortDescription: true,
       price: true, currency: true, isFeatured: true, stockQuantity: true,
-      brand:    { select: { id: true, name: true, slug: true, logoUrl: true } },
+      brand: { select: { id: true, name: true, slug: true, logoUrl: true } },
       category: { select: { id: true, name: true, slug: true, parentId: true } },
       images: {
-        select:  { imageUrl: true, altText: true },
+        select: { imageUrl: true, altText: true },
         orderBy: { position: "asc" },
-        take:    1,
+        take: 1,
       },
     },
   });
@@ -82,16 +82,16 @@ async function getRelatedProducts(
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const product  = await getProduct(slug);
+  const product = await getProduct(slug);
   if (!product) return { title: "Product Not Found" };
 
   return {
-    title:       `${product.name} | Jocax Solutions`,
+    title: `${product.name} | Jocax Solutions Limited`,
     description: product.shortDescription ?? product.description?.slice(0, 160) ?? undefined,
     openGraph: {
-      title:       product.name,
+      title: product.name,
       description: product.shortDescription ?? undefined,
-      images:      product.images[0]
+      images: product.images[0]
         ? [{ url: product.images[0].imageUrl, alt: product.images[0].altText ?? product.name }]
         : [],
       type: "website",
@@ -110,24 +110,24 @@ function ProductJsonLd({
 }) {
   const json = JSON.stringify({
     "@context": "https://schema.org",
-    "@type":    "Product",
-    name:        product.name,
+    "@type": "Product",
+    name: product.name,
     description: product.description ?? product.shortDescription ?? undefined,
-    sku:         product.sku         ?? undefined,
-    mpn:         product.modelNumber ?? undefined,
-    brand:       product.brand
+    sku: product.sku ?? undefined,
+    mpn: product.modelNumber ?? undefined,
+    brand: product.brand
       ? { "@type": "Brand", name: product.brand.name }
       : undefined,
-    image:  product.images.map((i) => i.imageUrl),
+    image: product.images.map((i) => i.imageUrl),
     offers: product.price
       ? {
-          "@type":       "Offer",
-          priceCurrency: product.currency,
-          price:         product.price,
-          availability:  product.stockQuantity > 0
-            ? "https://schema.org/InStock"
-            : "https://schema.org/OutOfStock",
-        }
+        "@type": "Offer",
+        priceCurrency: product.currency,
+        price: product.price,
+        availability: product.stockQuantity > 0
+          ? "https://schema.org/InStock"
+          : "https://schema.org/OutOfStock",
+      }
       : undefined,
   }).replace(/</g, "\\u003c"); // ← prevents </script> injection
 
@@ -155,10 +155,10 @@ export default async function ProductDetailPage({ params }: PageProps) {
   const formattedPrice =
     product.price != null
       ? new Intl.NumberFormat("en-US", {
-          style:                 "currency",
-          currency:              product.currency,
-          maximumFractionDigits: 0,
-        }).format(product.price)
+        style: "currency",
+        currency: product.currency,
+        maximumFractionDigits: 0,
+      }).format(product.price)
       : null;
 
   const inStock = product.stockQuantity > 0;
@@ -197,23 +197,23 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
         {/* ── Steel breadcrumb band ── */}
         <div style={{
-          background:   "var(--color-steel)",
+          background: "var(--color-steel)",
           borderBottom: "1px solid rgba(255,255,255,0.06)",
         }}>
           <div className="container" style={{ paddingBlock: "clamp(1rem, 3vw, 1.5rem)" }}>
             <nav
               aria-label="Breadcrumb"
               style={{
-                display:         "flex",
-                alignItems:      "center",
-                gap:             "0.375rem",
-                overflowX:       "auto",
-                whiteSpace:      "nowrap",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.375rem",
+                overflowX: "auto",
+                whiteSpace: "nowrap",
                 msOverflowStyle: "none",
-                scrollbarWidth:  "none",
+                scrollbarWidth: "none",
               }}
             >
-              <Link href="/"         className="breadcrumb-link">Home</Link>
+              <Link href="/" className="breadcrumb-link">Home</Link>
               <BreadcrumbSep />
               <Link href="/products" className="breadcrumb-link">Products</Link>
 
@@ -231,14 +231,14 @@ export default async function ProductDetailPage({ params }: PageProps) {
 
               <BreadcrumbSep />
               <span style={{
-                fontSize:     "var(--text-xs)",
-                color:        "rgba(255,255,255,0.75)",
-                fontFamily:   "var(--font-body)",
-                fontWeight:   500,
-                overflow:     "hidden",
+                fontSize: "var(--text-xs)",
+                color: "rgba(255,255,255,0.75)",
+                fontFamily: "var(--font-body)",
+                fontWeight: 500,
+                overflow: "hidden",
                 textOverflow: "ellipsis",
-                maxWidth:     "clamp(8rem, 25vw, 20rem)",
-                flexShrink:   0,
+                maxWidth: "clamp(8rem, 25vw, 20rem)",
+                flexShrink: 0,
               }}>
                 {product.name}
               </span>
@@ -306,8 +306,8 @@ export default async function ProductDetailPage({ params }: PageProps) {
 function BreadcrumbSep() {
   return (
     <span style={{
-      fontSize:   "var(--text-xs)",
-      color:      "rgba(255,255,255,0.2)",
+      fontSize: "var(--text-xs)",
+      color: "rgba(255,255,255,0.2)",
       flexShrink: 0,
       userSelect: "none",
     }}>

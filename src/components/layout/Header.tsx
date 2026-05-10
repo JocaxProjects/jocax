@@ -138,10 +138,10 @@ export default function Header() {
         <div className="container jx-header__inner">
 
           {/* ── Logo ─────────────────────────────────────────────────── */}
-          <Link href="/" aria-label="Jocax Solutions — home" className="jx-logo">
+          <Link href="/" aria-label="Jocax Solutions Limited — home" className="jx-logo">
             <Image
               src="/logo.png"
-              alt="Jocax Solutions"
+              alt="Jocax Solutions Limited"
               width={180}
               height={60}
               className="jx-logo__img"
@@ -377,7 +377,7 @@ export default function Header() {
           <span className="jx-drawer__footer-logo">
             <Image
               src="/logo.png"
-              alt="Jocax Solutions"
+              alt="Jocax Solutions Limited"
               width={110}
               height={38}
               style={{

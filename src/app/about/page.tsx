@@ -13,59 +13,59 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "About Us | Jocax Solutions",
+  title: "About Us | Jocax Solutions Limited",
   description:
-    "Jocax Solutions is East Africa's trusted B2B partner for commercial kitchen equipment — supplying restaurants, hotels, and food service operations since 2010.",
+    "Jocax Solutions Limited is East Africa's trusted B2B partner for commercial kitchen equipment — supplying restaurants, hotels, and food service operations since 2010.",
 };
 
 const STATS = [
-  { value: "14+",    label: "Years in Business" },
-  { value: "2,400+", label: "Products Stocked"  },
-  { value: "180+",   label: "Brand Partners"    },
-  { value: "3,800+", label: "Clients Served"    },
+  { value: "14+", label: "Years in Business" },
+  { value: "2,400+", label: "Products Stocked" },
+  { value: "180+", label: "Brand Partners" },
+  { value: "3,800+", label: "Clients Served" },
 ];
 
 const VALUES = [
   {
     icon: "M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z",
     title: "Quality Assurance",
-    body:  "Every product in our catalog meets international food-service standards. We source only from certified manufacturers with proven track records.",
+    body: "Every product in our catalog meets international food-service standards. We source only from certified manufacturers with proven track records.",
   },
   {
     icon: "M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z",
     title: "Expert Guidance",
-    body:  "Our specialists help you spec the right equipment for your operation — from a single fryer to a full commissary build-out.",
+    body: "Our specialists help you spec the right equipment for your operation — from a single fryer to a full commissary build-out.",
   },
   {
     icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
     title: "Fast Fulfilment",
-    body:  "In-stock orders dispatched within 48 hours. Our Nairobi warehouse holds over 1,200 SKUs ready for same-week delivery across East Africa.",
+    body: "In-stock orders dispatched within 48 hours. Our Nairobi warehouse holds over 1,200 SKUs ready for same-week delivery across East Africa.",
   },
   {
     icon: "M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z",
     title: "After-Sales Support",
-    body:  "Equipment failures cost revenue. We offer installation support, spare parts, and a dedicated technical helpline 6 days a week.",
+    body: "Equipment failures cost revenue. We offer installation support, spare parts, and a dedicated technical helpline 6 days a week.",
   },
 ];
 
 const PROOF_POINTS = [
   {
-    stat:   "48 hrs",
-    label:  "Dispatch time",
+    stat: "48 hrs",
+    label: "Dispatch time",
     detail: "In-stock orders leave our Nairobi warehouse within two business days — guaranteed.",
-    icon:   "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
+    icon: "M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z",
   },
   {
-    stat:   "6 countries",
-    label:  "East Africa coverage",
+    stat: "6 countries",
+    label: "East Africa coverage",
     detail: "Active delivery routes across Kenya, Uganda, Tanzania, Rwanda, Ethiopia, and Zambia.",
-    icon:   "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
+    icon: "M3.055 11H5a2 2 0 012 2v1a2 2 0 002 2 2 2 0 012 2v2.945M8 3.935V5.5A2.5 2.5 0 0010.5 8h.5a2 2 0 012 2 2 2 0 104 0 2 2 0 012-2h1.064M15 20.488V18a2 2 0 012-2h3.064M21 12a9 9 0 11-18 0 9 9 0 0118 0z",
   },
   {
-    stat:   "Certified",
-    label:  "Installation engineers",
+    stat: "Certified",
+    label: "Installation engineers",
     detail: "Every installation is performed by factory-trained technicians — not subcontractors.",
-    icon:   "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z",
+    icon: "M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z",
   },
 ];
 
@@ -507,7 +507,7 @@ export default function AboutPage() {
             />
 
             <p className="about-body-lead afu-d3">
-              Jocax Solutions started with a simple frustration — professional kitchens
+              Jocax Solutions Limited started with a simple frustration — professional kitchens
               deserved better than grey-market imports and three-month lead times.
               Since 2010 we have been East Africa&apos;s specialist distributor for
               commercial kitchen equipment, trusted by over 3,800 operations.
@@ -574,93 +574,93 @@ export default function AboutPage() {
                 >
                   {/* Exhaust hood */}
                   <polyline className="as" points="75,22 55,72 425,72 405,22"
-                    stroke="rgba(232,160,32,0.75)" strokeWidth="1.8" strokeLinejoin="round"/>
+                    stroke="rgba(232,160,32,0.75)" strokeWidth="1.8" strokeLinejoin="round" />
                   <line className="as" x1="75" y1="22" x2="405" y2="22"
-                    stroke="rgba(232,160,32,0.75)" strokeWidth="1.8"/>
-                  <line className="as-slow" x1="98" y1="33" x2="382" y2="33" stroke="rgba(232,160,32,0.3)" strokeWidth="1"/>
-                  <line className="as-slow" x1="92" y1="46" x2="388" y2="46" stroke="rgba(232,160,32,0.2)" strokeWidth="1"/>
-                  <line className="as-slow" x1="86" y1="59" x2="394" y2="59" stroke="rgba(232,160,32,0.12)" strokeWidth="1"/>
-                  <line className="as-slow" x1="157" y1="22" x2="146" y2="72" stroke="rgba(232,160,32,0.16)" strokeWidth="1"/>
-                  <line className="as-slow" x1="240" y1="22" x2="240" y2="72" stroke="rgba(232,160,32,0.16)" strokeWidth="1"/>
-                  <line className="as-slow" x1="323" y1="22" x2="334" y2="72" stroke="rgba(232,160,32,0.16)" strokeWidth="1"/>
-                  <line className="as" x1="105" y1="16" x2="105" y2="2" stroke="rgba(232,160,32,0.5)" strokeWidth="1.5"/>
-                  <line className="as" x1="375" y1="16" x2="375" y2="2" stroke="rgba(232,160,32,0.5)" strokeWidth="1.5"/>
-                  <line className="as" x1="92"  y1="2"  x2="118" y2="2" stroke="rgba(232,160,32,0.5)" strokeWidth="1.5"/>
-                  <line className="as" x1="362" y1="2"  x2="388" y2="2" stroke="rgba(232,160,32,0.5)" strokeWidth="1.5"/>
+                    stroke="rgba(232,160,32,0.75)" strokeWidth="1.8" />
+                  <line className="as-slow" x1="98" y1="33" x2="382" y2="33" stroke="rgba(232,160,32,0.3)" strokeWidth="1" />
+                  <line className="as-slow" x1="92" y1="46" x2="388" y2="46" stroke="rgba(232,160,32,0.2)" strokeWidth="1" />
+                  <line className="as-slow" x1="86" y1="59" x2="394" y2="59" stroke="rgba(232,160,32,0.12)" strokeWidth="1" />
+                  <line className="as-slow" x1="157" y1="22" x2="146" y2="72" stroke="rgba(232,160,32,0.16)" strokeWidth="1" />
+                  <line className="as-slow" x1="240" y1="22" x2="240" y2="72" stroke="rgba(232,160,32,0.16)" strokeWidth="1" />
+                  <line className="as-slow" x1="323" y1="22" x2="334" y2="72" stroke="rgba(232,160,32,0.16)" strokeWidth="1" />
+                  <line className="as" x1="105" y1="16" x2="105" y2="2" stroke="rgba(232,160,32,0.5)" strokeWidth="1.5" />
+                  <line className="as" x1="375" y1="16" x2="375" y2="2" stroke="rgba(232,160,32,0.5)" strokeWidth="1.5" />
+                  <line className="as" x1="92" y1="2" x2="118" y2="2" stroke="rgba(232,160,32,0.5)" strokeWidth="1.5" />
+                  <line className="as" x1="362" y1="2" x2="388" y2="2" stroke="rgba(232,160,32,0.5)" strokeWidth="1.5" />
                   {/* Range body */}
                   <rect className="as" x="55" y="72" width="370" height="92" rx="2"
-                    stroke="rgba(232,160,32,0.65)" strokeWidth="1.8"/>
-                  <line className="as-slow" x1="55" y1="130" x2="425" y2="130" stroke="rgba(232,160,32,0.26)" strokeWidth="1"/>
+                    stroke="rgba(232,160,32,0.65)" strokeWidth="1.8" />
+                  <line className="as-slow" x1="55" y1="130" x2="425" y2="130" stroke="rgba(232,160,32,0.26)" strokeWidth="1" />
                   <rect className="as" x="232" y="133" width="130" height="23" rx="1"
-                    stroke="rgba(232,160,32,0.42)" strokeWidth="1.2"/>
+                    stroke="rgba(232,160,32,0.42)" strokeWidth="1.2" />
                   <line className="as" x1="252" y1="144" x2="344" y2="144"
-                    stroke="rgba(232,160,32,0.55)" strokeWidth="2" strokeLinecap="round"/>
+                    stroke="rgba(232,160,32,0.55)" strokeWidth="2" strokeLinecap="round" />
                   <rect className="as-slow" x="262" y="136" width="42" height="13" rx="1"
-                    stroke="rgba(232,160,32,0.2)" strokeWidth="1"/>
+                    stroke="rgba(232,160,32,0.2)" strokeWidth="1" />
                   <rect className="as" x="370" y="133" width="46" height="23" rx="1"
-                    stroke="rgba(232,160,32,0.42)" strokeWidth="1.2"/>
+                    stroke="rgba(232,160,32,0.42)" strokeWidth="1.2" />
                   <line className="as" x1="378" y1="144" x2="408" y2="144"
-                    stroke="rgba(232,160,32,0.45)" strokeWidth="1.5" strokeLinecap="round"/>
+                    stroke="rgba(232,160,32,0.45)" strokeWidth="1.5" strokeLinecap="round" />
                   {/* Burners */}
                   {([115, 195, 275] as number[]).map((cx) => (
                     <g key={cx}>
-                      <circle className="as" cx={cx} cy="96" r="20" stroke="rgba(232,160,32,0.55)" strokeWidth="1.5"/>
-                      <circle className="as-slow" cx={cx} cy="96" r="11" stroke="rgba(232,160,32,0.30)" strokeWidth="1"/>
-                      <circle className="as" cx={cx} cy="96" r="4" stroke="rgba(232,160,32,0.65)" strokeWidth="1.8"/>
-                      <line className="as-slow" x1={cx-22} y1="96" x2={cx+22} y2="96" stroke="rgba(232,160,32,0.2)" strokeWidth="1"/>
-                      <line className="as-slow" x1={cx} y1="74" x2={cx} y2="118" stroke="rgba(232,160,32,0.2)" strokeWidth="1"/>
+                      <circle className="as" cx={cx} cy="96" r="20" stroke="rgba(232,160,32,0.55)" strokeWidth="1.5" />
+                      <circle className="as-slow" cx={cx} cy="96" r="11" stroke="rgba(232,160,32,0.30)" strokeWidth="1" />
+                      <circle className="as" cx={cx} cy="96" r="4" stroke="rgba(232,160,32,0.65)" strokeWidth="1.8" />
+                      <line className="as-slow" x1={cx - 22} y1="96" x2={cx + 22} y2="96" stroke="rgba(232,160,32,0.2)" strokeWidth="1" />
+                      <line className="as-slow" x1={cx} y1="74" x2={cx} y2="118" stroke="rgba(232,160,32,0.2)" strokeWidth="1" />
                     </g>
                   ))}
                   {([350, 382, 412] as number[]).map((cx) => (
                     <g key={cx}>
-                      <circle className="as" cx={cx} cy="94" r="11" stroke="rgba(232,160,32,0.48)" strokeWidth="1.5"/>
-                      <circle className="as-slow" cx={cx} cy="94" r="4" stroke="rgba(232,160,32,0.55)" strokeWidth="1"/>
+                      <circle className="as" cx={cx} cy="94" r="11" stroke="rgba(232,160,32,0.48)" strokeWidth="1.5" />
+                      <circle className="as-slow" cx={cx} cy="94" r="4" stroke="rgba(232,160,32,0.55)" strokeWidth="1" />
                     </g>
                   ))}
                   {/* Knobs */}
                   {([82, 111, 140, 169, 198, 227] as number[]).map((cx) => (
                     <g key={cx}>
-                      <circle className="as" cx={cx} cy="144" r="5.5" stroke="rgba(232,160,32,0.45)" strokeWidth="1.2"/>
-                      <circle cx={cx} cy="144" r="2" fill="rgba(232,160,32,0.38)"/>
+                      <circle className="as" cx={cx} cy="144" r="5.5" stroke="rgba(232,160,32,0.45)" strokeWidth="1.2" />
+                      <circle cx={cx} cy="144" r="2" fill="rgba(232,160,32,0.38)" />
                     </g>
                   ))}
                   {/* Sink */}
-                  <rect className="as" x="4" y="90" width="51" height="74" rx="2" stroke="rgba(232,160,32,0.42)" strokeWidth="1.5"/>
-                  <rect className="as" x="10" y="96" width="39" height="30" rx="2" stroke="rgba(232,160,32,0.26)" strokeWidth="1"/>
-                  <circle className="as-slow" cx="29" cy="128" r="3" stroke="rgba(232,160,32,0.35)" strokeWidth="1"/>
-                  <line className="as" x1="29" y1="125" x2="29" y2="110" stroke="rgba(232,160,32,0.48)" strokeWidth="1.5" strokeLinecap="round"/>
-                  <line className="as" x1="22" y1="110" x2="36" y2="110" stroke="rgba(232,160,32,0.48)" strokeWidth="1.5" strokeLinecap="round"/>
+                  <rect className="as" x="4" y="90" width="51" height="74" rx="2" stroke="rgba(232,160,32,0.42)" strokeWidth="1.5" />
+                  <rect className="as" x="10" y="96" width="39" height="30" rx="2" stroke="rgba(232,160,32,0.26)" strokeWidth="1" />
+                  <circle className="as-slow" cx="29" cy="128" r="3" stroke="rgba(232,160,32,0.35)" strokeWidth="1" />
+                  <line className="as" x1="29" y1="125" x2="29" y2="110" stroke="rgba(232,160,32,0.48)" strokeWidth="1.5" strokeLinecap="round" />
+                  <line className="as" x1="22" y1="110" x2="36" y2="110" stroke="rgba(232,160,32,0.48)" strokeWidth="1.5" strokeLinecap="round" />
                   {/* Prep counter */}
-                  <rect className="as" x="425" y="90" width="51" height="74" rx="2" stroke="rgba(232,160,32,0.42)" strokeWidth="1.5"/>
-                  <rect className="as" x="430" y="95" width="41" height="28" rx="1" stroke="rgba(232,160,32,0.26)" strokeWidth="1"/>
+                  <rect className="as" x="425" y="90" width="51" height="74" rx="2" stroke="rgba(232,160,32,0.42)" strokeWidth="1.5" />
+                  <rect className="as" x="430" y="95" width="41" height="28" rx="1" stroke="rgba(232,160,32,0.26)" strokeWidth="1" />
                   {([438, 446, 454, 462] as number[]).map((x) => (
-                    <line key={x} className="as-slow" x1={x} y1="95" x2={x} y2="123" stroke="rgba(232,160,32,0.1)" strokeWidth="0.8"/>
+                    <line key={x} className="as-slow" x1={x} y1="95" x2={x} y2="123" stroke="rgba(232,160,32,0.1)" strokeWidth="0.8" />
                   ))}
                   {/* Pot rack */}
-                  <line className="as" x1="4" y1="22" x2="52" y2="22" stroke="rgba(232,160,32,0.45)" strokeWidth="1.5"/>
+                  <line className="as" x1="4" y1="22" x2="52" y2="22" stroke="rgba(232,160,32,0.45)" strokeWidth="1.5" />
                   {([12, 28, 44] as number[]).map((x, i) => (
                     <g key={x}>
-                      <line className="as" x1={x} y1="22" x2={x} y2={34+i*3} stroke="rgba(232,160,32,0.36)" strokeWidth="1"/>
-                      <path className="as" d={`M${x-7} ${34+i*3} Q${x} ${46+i*3} ${x+7} ${34+i*3}`} stroke="rgba(232,160,32,0.50)" strokeWidth="1.2"/>
-                      <line className="as-slow" x1={x-7} y1={34+i*3} x2={x+7} y2={34+i*3} stroke="rgba(232,160,32,0.36)" strokeWidth="1"/>
+                      <line className="as" x1={x} y1="22" x2={x} y2={34 + i * 3} stroke="rgba(232,160,32,0.36)" strokeWidth="1" />
+                      <path className="as" d={`M${x - 7} ${34 + i * 3} Q${x} ${46 + i * 3} ${x + 7} ${34 + i * 3}`} stroke="rgba(232,160,32,0.50)" strokeWidth="1.2" />
+                      <line className="as-slow" x1={x - 7} y1={34 + i * 3} x2={x + 7} y2={34 + i * 3} stroke="rgba(232,160,32,0.36)" strokeWidth="1" />
                     </g>
                   ))}
                   {/* Steam */}
                   {([115, 195, 275] as number[]).map((cx, i) => (
                     <path key={cx} className="as-slow"
-                      d={`M${cx} 73 Q${cx+5} 65 ${cx} 57 Q${cx-5} 49 ${cx} 41`}
+                      d={`M${cx} 73 Q${cx + 5} 65 ${cx} 57 Q${cx - 5} 49 ${cx} 41`}
                       stroke="rgba(232,160,32,0.16)" strokeWidth="1" strokeLinecap="round"
-                      style={{ animationDelay: `${0.6+i*0.2}s` }}
+                      style={{ animationDelay: `${0.6 + i * 0.2}s` }}
                     />
                   ))}
                   {/* Floor */}
                   <line className="as-slow" x1="0" y1="164" x2="480" y2="164"
-                    stroke="rgba(232,160,32,0.10)" strokeWidth="1" strokeDasharray="5 7"/>
+                    stroke="rgba(232,160,32,0.10)" strokeWidth="1" strokeDasharray="5 7" />
                   {/* Caption */}
                   <text x="240" y="190" textAnchor="middle"
                     fontSize="7.5" fontFamily="monospace" letterSpacing="3.5"
                     fill="rgba(232,160,32,0.18)">
-                    COMMERCIAL KITCHEN — JOCAX SOLUTIONS
+                    COMMERCIAL KITCHEN — JOCAX SOLUTIONS LIMITED
                   </text>
                 </svg>
               </div>
@@ -671,7 +671,7 @@ export default function AboutPage() {
                   <div className="proof-icon">
                     <svg style={{ width: "0.9rem", height: "0.9rem", color: "var(--color-amber)" }}
                       fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={pt.icon}/>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={pt.icon} />
                     </svg>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
@@ -701,7 +701,7 @@ export default function AboutPage() {
                   <div className="value-icon">
                     <svg style={{ width: "1.1rem", height: "1.1rem", color: "var(--color-amber)" }}
                       fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={v.icon}/>
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d={v.icon} />
                     </svg>
                   </div>
                   <div>

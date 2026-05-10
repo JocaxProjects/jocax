@@ -8,7 +8,11 @@ import Footer from "@/components/layout/Footer";
 import WhatsAppButton from "@/components/WhatsAppButton";
 import { headers } from "next/headers";
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke";
+// Always use the custom domain — never the Vercel deployment URL.
+// Set NEXT_PUBLIC_SITE_URL=https://www.jocaxsolutions.co.ke in Vercel env vars.
+const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke"
+).replace(/\/+$/, "");
 
 // Body font — modern, clean, highly readable at all sizes
 const outfit = Outfit({
@@ -30,8 +34,8 @@ export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
 
   title: {
-    default: "Jocax Solutions | Commercial Kitchen Equipment Kenya",
-    template: "%s | Jocax Solutions",
+    default: "Jocax Solutions Limited | Commercial Kitchen Equipment Kenya",
+    template: "%s | Jocax Solutions Limited",
   },
   description:
     "Kenya's leading supplier of professional-grade commercial kitchen equipment for restaurants, hotels, and food service operations. Shop ovens, fryers, refrigeration, and more.",
@@ -44,12 +48,12 @@ export const metadata: Metadata = {
     "commercial ovens Kenya",
     "industrial refrigeration Kenya",
     "food service equipment",
-    "Jocax Solutions",
+    "Jocax Solutions Limited",
   ],
 
-  authors: [{ name: "Jocax Solutions", url: SITE_URL }],
-  creator: "Jocax Solutions",
-  publisher: "Jocax Solutions",
+  authors: [{ name: "Jocax Solutions Limited", url: SITE_URL }],
+  creator: "Jocax Solutions Limited",
+  publisher: "Jocax Solutions Limited",
 
   // Canonical URL — prevents duplicate-content penalties
   alternates: {
@@ -60,22 +64,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_KE",
     url: SITE_URL,
-    siteName: "Jocax Solutions",
-    title: "Jocax Solutions | Commercial Kitchen Equipment Kenya",
+    siteName: "Jocax Solutions Limited",
+    title: "Jocax Solutions Limited | Commercial Kitchen Equipment Kenya",
     description: "Kenya's leading supplier of professional-grade commercial kitchen equipment for restaurants, hotels, and food service operations.",
     images: [
       {
         url: "/logo.png",
         width: 512,
         height: 512,
-        alt: "Jocax Solutions Logo",
+        alt: "Jocax Solutions Limited Logo",
       },
     ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Jocax Solutions | Commercial Kitchen Equipment Kenya",
+    title: "Jocax Solutions Limited | Commercial Kitchen Equipment Kenya",
     description: "Kenya's leading supplier of professional-grade commercial kitchen equipment.",
     images: ["/logo.png"],
   },
@@ -128,7 +132,7 @@ export default async function RootLayout({
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "Organization",
-              name: "Jocax Solutions",
+              name: "Jocax Solutions Limited",
               url: SITE_URL,
               logo: `${SITE_URL}/logo.png`,
               description:

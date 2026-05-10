@@ -14,7 +14,7 @@ import Image from "next/image";
 import { CATEGORIES } from "@/lib/categories.data";
 
 export const metadata: Metadata = {
-  title: "Equipment Categories | Jocax Solutions",
+  title: "Equipment Categories | Jocax Solutions Limited",
   description:
     "Browse all commercial kitchen equipment categories — ovens, refrigeration, fryers, prep tables, warewashing, ventilation, and more.",
 };
@@ -202,9 +202,9 @@ export default function CategoriesPage() {
           <div aria-hidden="true" style={{
             position: "absolute", inset: 0, pointerEvents: "none",
             background: "radial-gradient(ellipse 60% 100% at 50% 0%, rgba(232,160,32,0.05) 0%, transparent 70%)",
-          }}/>
+          }} />
           {/* Diagonal clip — always visible */}
-          <div className="cat-header-diag" aria-hidden="true"/>
+          <div className="cat-header-diag" aria-hidden="true" />
 
           <div className="container cat-header-body">
             {/* Breadcrumb — centered on mobile, left at lg+ */}
@@ -277,13 +277,13 @@ export default function CategoriesPage() {
                     priority={false}
                   />
                   {/* Gradient overlay */}
-                  <div className="cat-card-overlay"/>
+                  <div className="cat-card-overlay" />
 
                   {/* Color accent top bar */}
                   <div style={{
                     position: "absolute", top: 0, left: 0, right: 0, height: "3px",
                     background: `linear-gradient(90deg, ${cat.color}, transparent)`,
-                  }}/>
+                  }} />
 
                   {/* Card content */}
                   <div style={{

@@ -12,14 +12,14 @@ import {
 } from "@/components/home";
 
 export const metadata: Metadata = {
-  title: "Commercial Kitchen Equipment Kenya | Jocax Solutions",
+  title: "Commercial Kitchen Equipment Kenya | Jocax Solutions Limited",
   description:
     "Shop professional commercial kitchen equipment in Kenya — ovens, fryers, refrigeration, grills, and more. Trusted by restaurants, hotels, and caterers across Nairobi.",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "Commercial Kitchen Equipment Kenya | Jocax Solutions",
+    title: "Commercial Kitchen Equipment Kenya | Jocax Solutions Limited",
     description: "Shop professional commercial kitchen equipment in Kenya — ovens, fryers, refrigeration, grills, and more.",
     url: "/",
   },

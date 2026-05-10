@@ -21,9 +21,9 @@ const NAV_SECTIONS = [
   {
     label: "Catalog",
     items: [
-      { href: "/admin/products",   icon: "▦", label: "Products"   },
+      { href: "/admin/products", icon: "▦", label: "Products" },
       { href: "/admin/categories", icon: "◫", label: "Categories" },
-      { href: "/admin/brands",     icon: "◉", label: "Brands"     },
+      { href: "/admin/brands", icon: "◉", label: "Brands" },
       { href: "/admin/attributes", icon: "◧", label: "Attributes" },
     ],
   },
@@ -130,7 +130,7 @@ export default function AdminSidebar() {
           ))}
         </div>
 
-        <div className="admin-nav-footer">v1.0.0 · Jocax Solutions</div>
+        <div className="admin-nav-footer">v1.0.0 · Jocax Solutions Limited</div>
       </nav>
     </>
   );

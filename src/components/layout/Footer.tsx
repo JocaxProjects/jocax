@@ -98,7 +98,7 @@ function FooterSupportContact() {
         <a
           href="mailto:hello@jocaxsolutions.co.ke"
           className="footer-support-card"
-          aria-label="Email Jocax Solutions support"
+          aria-label="Email Jocax Solutions Limited support"
         >
           <span className="footer-support-card__icon" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -115,7 +115,7 @@ function FooterSupportContact() {
         <a
           href="tel:+254725692649"
           className="footer-support-card"
-          aria-label="Call Jocax Solutions support"
+          aria-label="Call Jocax Solutions Limited support"
         >
           <span className="footer-support-card__icon" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -206,12 +206,12 @@ export default function Footer() {
             {/* Logo — real image with SVG recolor filter */}
             <Link
               href="/"
-              aria-label="Jocax Solutions — home"
+              aria-label="Jocax Solutions Limited — home"
               className="footer-logo-link"
             >
               <Image
                 src="/logo.png"
-                alt="Jocax Solutions"
+                alt="Jocax Solutions Limited"
                 width={180}
                 height={60}
                 className="footer-logo-img"

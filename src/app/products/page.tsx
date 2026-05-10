@@ -18,13 +18,13 @@ import ProductsClient from "./ProductsClient";
 // ─── Metadata ─────────────────────────────────────────────────────────────────
 
 export const metadata: Metadata = {
-  title: "Commercial Kitchen Equipment | Jocax Solutions",
+  title: "Commercial Kitchen Equipment | Jocax Solutions Limited",
   description:
     "Browse our full catalog of professional commercial kitchen equipment including ovens, fryers, refrigerators, prep tables, and more.",
   openGraph: {
-    title:       "Commercial Kitchen Equipment | Jocax Solutions",
+    title: "Commercial Kitchen Equipment | Jocax Solutions Limited",
     description: "Browse our full catalog of professional commercial kitchen equipment.",
-    type:        "website",
+    type: "website",
   },
 };
 
@@ -32,13 +32,13 @@ export const metadata: Metadata = {
 
 // Next.js 15: searchParams is a Promise, not a plain object.
 type ResolvedSearchParams = {
-  brand?:     string;
-  category?:  string;
-  minPrice?:  string;
-  maxPrice?:  string;
-  sort?:      string;
-  page?:      string;
-  q?:         string;
+  brand?: string;
+  category?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  sort?: string;
+  page?: string;
+  q?: string;
 };
 
 interface PageProps {
@@ -56,7 +56,7 @@ async function getProducts(params: ResolvedSearchParams) {
 
   const where: Prisma.ProductWhereInput = {
     isActive: true,
-    ...(params.brand    && { brand:    { slug: params.brand    } }),
+    ...(params.brand && { brand: { slug: params.brand } }),
     ...(params.category && { category: { slug: params.category } }),
     ...((params.minPrice || params.maxPrice) && {
       price: {
@@ -66,7 +66,7 @@ async function getProducts(params: ResolvedSearchParams) {
     }),
     ...(params.q && {
       OR: [
-        { name:             { contains: params.q, mode: "insensitive" } },
+        { name: { contains: params.q, mode: "insensitive" } },
         { shortDescription: { contains: params.q, mode: "insensitive" } },
       ],
     }),
@@ -74,10 +74,10 @@ async function getProducts(params: ResolvedSearchParams) {
 
   const orderBy = (() => {
     switch (params.sort) {
-      case "price_asc":  return { price:      "asc"  as const };
-      case "price_desc": return { price:      "desc" as const };
-      case "newest":     return { createdAt:  "desc" as const };
-      default:           return { isFeatured: "desc" as const };
+      case "price_asc": return { price: "asc" as const };
+      case "price_desc": return { price: "desc" as const };
+      case "newest": return { createdAt: "desc" as const };
+      default: return { isFeatured: "desc" as const };
     }
   })();
 
@@ -85,23 +85,23 @@ async function getProducts(params: ResolvedSearchParams) {
     prisma.product.findMany({
       where,
       skip,
-      take:    PRODUCTS_PER_PAGE,
+      take: PRODUCTS_PER_PAGE,
       orderBy,
       select: {
-        id:               true,
-        name:             true,
-        slug:             true,
+        id: true,
+        name: true,
+        slug: true,
         shortDescription: true,
-        price:            true,
-        currency:         true,
-        isFeatured:       true,
-        stockQuantity:    true,
-        brand:    { select: { id: true, name: true, slug: true, logoUrl: true } },
+        price: true,
+        currency: true,
+        isFeatured: true,
+        stockQuantity: true,
+        brand: { select: { id: true, name: true, slug: true, logoUrl: true } },
         category: { select: { id: true, name: true, slug: true, parentId: true } },
         images: {
-          select:  { imageUrl: true, altText: true },
+          select: { imageUrl: true, altText: true },
           orderBy: { position: "asc" },
-          take:    1,
+          take: 1,
         },
       },
     }),
@@ -114,13 +114,13 @@ async function getProducts(params: ResolvedSearchParams) {
 async function getFilterOptions() {
   const [brands, categories] = await Promise.all([
     prisma.brand.findMany({
-      where:   { products: { some: { isActive: true } } },
-      select:  { id: true, name: true, slug: true },
+      where: { products: { some: { isActive: true } } },
+      select: { id: true, name: true, slug: true },
       orderBy: { name: "asc" },
     }),
     prisma.category.findMany({
-      where:   { products: { some: { isActive: true } }, parentId: null },
-      select:  { id: true, name: true, slug: true },
+      where: { products: { some: { isActive: true } }, parentId: null },
+      select: { id: true, name: true, slug: true },
       orderBy: { name: "asc" },
     }),
   ]);
