@@ -6,8 +6,9 @@ import type { MetadataRoute } from "next";
 
 // Always use the custom domain — never the Vercel deployment URL.
 // Set NEXT_PUBLIC_SITE_URL=https://www.jocaxsolutions.co.ke in Vercel env vars.
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke";
 const SITE_URL = (
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke"
+    rawSiteUrl.startsWith("http") ? rawSiteUrl : `https://${rawSiteUrl}`
 ).replace(/\/+$/, ""); // strip any trailing slashes to prevent double-slash in sitemap URL
 
 export default function robots(): MetadataRoute.Robots {

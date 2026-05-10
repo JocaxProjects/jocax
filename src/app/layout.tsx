@@ -10,8 +10,10 @@ import { headers } from "next/headers";
 
 // Always use the custom domain — never the Vercel deployment URL.
 // Set NEXT_PUBLIC_SITE_URL=https://www.jocaxsolutions.co.ke in Vercel env vars.
+const rawSiteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke";
+// Ensure the URL always has a protocol — guards against env vars set without https://
 const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.jocaxsolutions.co.ke"
+  rawSiteUrl.startsWith("http") ? rawSiteUrl : `https://${rawSiteUrl}`
 ).replace(/\/+$/, "");
 
 // Body font — modern, clean, highly readable at all sizes
